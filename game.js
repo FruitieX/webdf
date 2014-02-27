@@ -3,7 +3,9 @@ var geometry, material, mesh;
 var controls,time = Date.now();
 var map_scale = 10;
 
-var objects = [];
+var collision_distance = 5;
+
+var map = [];
 
 var ray;
 
@@ -97,13 +99,13 @@ function init() {
 	// load map
 	loader = new THREE.JSONLoader();
 	loader.load( "res/map.js", function(json_geometry) {
-		mesh = new THREE.Mesh( json_geometry, new THREE.MeshNormalMaterial() );
-		mesh.scale.set( map_scale, map_scale, map_scale );
-		mesh.position.x = 0;
-		mesh.position.y = 0;
-		mesh.position.z = 0;
+		map = new THREE.Mesh( json_geometry, new THREE.MeshNormalMaterial() );
+		map.scale.set( map_scale, map_scale, map_scale );
+		map.position.x = 0;
+		map.position.y = 0;
+		map.position.z = 0;
 
-		scene.add(mesh);
+		scene.add(map);
 	});
 
 	renderer = new THREE.WebGLRenderer();
@@ -127,19 +129,19 @@ function animate() {
 	controls.isOnObject( false );
 
 	ray.ray.origin.copy( controls.getObject().position );
-	ray.ray.origin.y -= 10;
+	ray.ray.origin.y -= collision_distance;
 
-	var intersections = ray.intersectObjects( objects );
+	var intersections = ray.intersectObjects( [map] );
 
 	if ( intersections.length > 0 ) {
 		var distance = intersections[ 0 ].distance;
-		if ( distance > 0 && distance < 10 ) {
+		if ( distance > 0 && distance < collision_distance ) {
+			console.log('intersection: ' + intersections[0].distance);
 			controls.isOnObject( true );
+			controls.getObject().position.y += collision_distance - distance;
 		}
 	}
 	controls.update( Date.now() - time );
 	renderer.render( scene, camera );
 	time = Date.now();
-
-	console.log(controls.getObject().position.x + ", " + controls.getObject().position.y + ", " + controls.getObject().position.z);
 }
