@@ -1,6 +1,7 @@
 var camera, scene, renderer;
 var geometry, material, mesh;
 var controls,time = Date.now();
+var map_scale = 10;
 
 var objects = [];
 
@@ -93,36 +94,13 @@ function init() {
 	ray = new THREE.Raycaster();
 	ray.ray.direction.set( 0, -1, 0 );
 
-	// floor
-	geometry = new THREE.PlaneGeometry( 2000, 2000, 100, 100 );
-	geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
-
-	for ( var i = 0, l = geometry.vertices.length; i < l; i ++ ) {
-		var vertex = geometry.vertices[ i ];
-		vertex.x += Math.random() * 20 - 10;
-		vertex.y += Math.random() * 2;
-		vertex.z += Math.random() * 20 - 10;
-	}
-
-	for ( var i = 0, l = geometry.faces.length; i < l; i ++ ) {
-		var face = geometry.faces[ i ];
-		face.vertexColors[ 0 ] = new THREE.Color().setHSL( Math.random() * 0.2 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
-		face.vertexColors[ 1 ] = new THREE.Color().setHSL( Math.random() * 0.2 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
-		face.vertexColors[ 2 ] = new THREE.Color().setHSL( Math.random() * 0.2 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
-	}
-
-	material = new THREE.MeshBasicMaterial( { vertexColors: THREE.VertexColors } );
-
-	mesh = new THREE.Mesh( geometry, material );
-	scene.add( mesh );
-
-	// load 3d model
+	// load map
 	loader = new THREE.JSONLoader();
-	loader.load( "res/test.js", function(json_geometry) {
+	loader.load( "res/map.js", function(json_geometry) {
 		mesh = new THREE.Mesh( json_geometry, new THREE.MeshNormalMaterial() );
-		mesh.scale.set( 1, 1, 1 );
+		mesh.scale.set( map_scale, map_scale, map_scale );
 		mesh.position.x = 0;
-		mesh.position.y = 10;
+		mesh.position.y = 0;
 		mesh.position.z = 0;
 
 		scene.add(mesh);
