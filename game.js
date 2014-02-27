@@ -116,29 +116,17 @@ function init() {
 	mesh = new THREE.Mesh( geometry, material );
 	scene.add( mesh );
 
-	// objects
-	geometry = new THREE.BoxGeometry( 20, 20, 20 );
+	// load 3d model
+	loader = new THREE.JSONLoader();
+	loader.load( "res/test.js", function(json_geometry) {
+		mesh = new THREE.Mesh( json_geometry, new THREE.MeshNormalMaterial() );
+		mesh.scale.set( 1, 1, 1 );
+		mesh.position.x = 0;
+		mesh.position.y = 10;
+		mesh.position.z = 0;
 
-	for ( var i = 0, l = geometry.faces.length; i < l; i ++ ) {
-		var face = geometry.faces[ i ];
-		face.vertexColors[ 0 ] = new THREE.Color().setHSL( Math.random() * 0.2 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
-		face.vertexColors[ 1 ] = new THREE.Color().setHSL( Math.random() * 0.2 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
-		face.vertexColors[ 2 ] = new THREE.Color().setHSL( Math.random() * 0.2 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
-	}
-
-	for ( var i = 0; i < 500; i ++ ) {
-		material = new THREE.MeshPhongMaterial( { specular: 0xffffff, shading: THREE.FlatShading, vertexColors: THREE.VertexColors } );
-
-		var mesh = new THREE.Mesh( geometry, material );
-		mesh.position.x = Math.floor( Math.random() * 20 - 10 ) * 20;
-		mesh.position.y = Math.floor( Math.random() * 20 ) * 20 + 10;
-		mesh.position.z = Math.floor( Math.random() * 20 - 10 ) * 20;
-		scene.add( mesh );
-
-		material.color.setHSL( Math.random() * 0.2 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
-		objects.push( mesh );
-
-	}
+		scene.add(mesh);
+	});
 
 	renderer = new THREE.WebGLRenderer();
 	renderer.setClearColor( 0xffffff );
@@ -174,4 +162,6 @@ function animate() {
 	controls.update( Date.now() - time );
 	renderer.render( scene, camera );
 	time = Date.now();
+
+	console.log(controls.getObject().position.x + ", " + controls.getObject().position.y + ", " + controls.getObject().position.z);
 }
