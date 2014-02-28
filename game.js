@@ -8,6 +8,17 @@ var epsilon = 0.1;
 var bbox_mins = [-0.5, -2.0, -0.5];
 var bbox_maxs = [0.5, 0.5, 0.5];
 
+// TODO: put these in a function
+var velocity = new THREE.Vector3();
+var moveForward = false;
+var moveBackward = false;
+var moveLeft = false;
+var moveRight = false;
+
+var isOnObject = false;
+var canJump = false;
+
+
 var map = [];
 
 var ray, dirVec;
@@ -76,6 +87,76 @@ if ( havePointerLock ) {
 	instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
 }
 
+var onKeyDown = function ( event ) {
+
+	//console.log(" " + event.keyCode + " ");
+	switch ( event.keyCode ) {
+
+		case 38: // up
+		case 87: // w
+		case 188:
+			moveForward = true;
+			break;
+
+		case 37: // left
+		case 65: // a
+			moveLeft = true; break;
+
+		case 40: // down
+		case 83: // s
+		case 79:
+			moveBackward = true;
+			break;
+
+		case 39: // right
+		case 68: // d
+		case 69:
+			moveRight = true;
+			break;
+
+		case 32: // space
+			if ( canJump === true ) velocity.y += 1;
+			canJump = false;
+			break;
+
+	}
+
+};
+
+var onKeyUp = function ( event ) {
+
+	switch( event.keyCode ) {
+
+		case 38: // up
+		case 87: // w
+		case 188:
+			moveForward = false;
+			break;
+
+		case 37: // left
+		case 65: // a
+			moveLeft = false;
+			break;
+
+		case 40: // down
+		case 83: // s
+		case 79:
+			moveBackward = false;
+			break;
+
+		case 39: // right
+		case 68: // d
+			case 69:
+			moveRight = false;
+			break;
+
+	}
+
+};
+
+document.addEventListener( 'keydown', onKeyDown, false );
+document.addEventListener( 'keyup', onKeyUp, false );
+
 init();
 animate();
 
@@ -123,7 +204,7 @@ function onWindowResize() {
 	renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
-function collisionDetect() {
+function doMove(delta) {
 	var dirs = [
 		[ bbox_mins[0], bbox_mins[1], bbox_mins[2] ],
 		[ bbox_mins[0], bbox_mins[1], bbox_maxs[2] ],
@@ -135,13 +216,39 @@ function collisionDetect() {
 		[ bbox_maxs[0], bbox_maxs[1], bbox_maxs[2] ],
 	];
 
+	delta *= 0.05;
+
+	velocity.x += ( - velocity.x ) * 0.08 * delta;
+	velocity.z += ( - velocity.z ) * 0.08 * delta;
+
+	velocity.y -= 0.05 * delta;
+
+	if ( moveForward ) velocity.z -= 0.10 * delta;
+	if ( moveBackward ) velocity.z += 0.10 * delta;
+
+	if ( moveLeft ) velocity.x -= 0.10 * delta;
+	if ( moveRight ) velocity.x += 0.10 * delta;
+
+	if ( isOnObject === true ) {
+
+		velocity.y = Math.max( 0, velocity.y );
+
+	}
+
+	var yawObject = controls.getObject();
+
+	yawObject.translateX( velocity.x );
+	yawObject.translateY( velocity.y );
+	yawObject.translateZ( velocity.z );
+
+	controls.isOnObject( false );
 	for(var i = 0; i < dirs.length; i++) {
 		ray = new THREE.Raycaster();
 		dirVec = new THREE.Vector3(dirs[i][0], dirs[i][1], dirs[i][2]).normalize();
 		//ray.ray.direction.set(dirs[i][0], dirs[i][1], dirs[i][2]);
 
 		//ray.ray.origin.copy( controls.getObject().position );
-		ray.set(controls.getObject().position, new THREE.Vector3().copy(dirVec).multiplyScalar(collision_distance + epsilon));
+		ray.set(yawObject.position, new THREE.Vector3().copy(dirVec).multiplyScalar(collision_distance + epsilon));
 
 		var intersections = ray.intersectObjects( [map] );
 
@@ -172,10 +279,9 @@ function collisionDetect() {
 function animate() {
 	requestAnimationFrame( animate );
 
-	controls.isOnObject( false );
-
-	collisionDetect();
 	controls.update( Date.now() - time );
+	doMove(Date.now() - time);
+
 	renderer.render( scene, camera );
 	time = Date.now();
 }
