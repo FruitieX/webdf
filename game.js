@@ -145,13 +145,16 @@ function collisionDetect() {
 		var intersections = ray.intersectObjects( [map] );
 
 		if ( intersections.length > 0 ) {
-			//console.log(intersections);
-			var distance = intersections[ 0 ].distance;
-			if ( distance > 0 && distance < collision_distance ) {
-			//	console.log('intersection: ' + intersections[0].distance);
-				controls.isOnObject( true );
-				var normal = intersections[0].face.normal;
-				controls.getObject().position.add(new THREE.Vector3().copy(normal).multiplyScalar((collision_distance - distance)));
+			// loop through every intersection
+			for(var j = 0; j < intersections.length; j++) {
+				//console.log(intersections);
+				var distance = intersections[j].distance;
+				if ( distance > 0 && distance < collision_distance ) {
+				//	console.log('intersection: ' + intersections[0].distance);
+					controls.isOnObject( true );
+					var normal = intersections[j].face.normal;
+					controls.getObject().position.add(new THREE.Vector3().copy(normal).multiplyScalar((collision_distance - distance)));
+				}
 			}
 		}
 	}
