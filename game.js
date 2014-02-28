@@ -4,6 +4,8 @@ var controls,time = Date.now();
 var map_scale = 10;
 
 var collision_distance = 5;
+var bbox_mins = [-0.5, 0, -0.5];
+var bbox_maxs = [0.5, 2, 0.5];
 
 var map = [];
 
@@ -93,9 +95,6 @@ function init() {
 	controls = new THREE.PointerLockControls( camera );
 	scene.add( controls.getObject() );
 
-	ray = new THREE.Raycaster();
-	ray.ray.direction.set( 0, -1, 0 );
-
 	// load map
 	loader = new THREE.JSONLoader();
 	loader.load( "res/map.js", function(json_geometry) {
@@ -123,24 +122,44 @@ function onWindowResize() {
 	renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
+var dirs = [
+	[ bbox_mins[0], bbox_mins[1], bbox_mins[2]) ],
+	[ bbox_mins[0], bbox_mins[1], bbox_maxs[2]) ],
+	[ bbox_mins[0], bbox_maxs[1], bbox_mins[2]) ],
+	[ bbox_mins[0], bbox_maxs[1], bbox_maxs[2]) ],
+	[ bbox_maxs[0], bbox_mins[1], bbox_mins[2]) ],
+	[ bbox_maxs[0], bbox_mins[1], bbox_maxs[2]) ],
+	[ bbox_maxs[0], bbox_maxs[1], bbox_maxs[2]) ],
+	[ bbox_maxs[0], bbox_maxs[1], bbox_maxs[2]) ],
+];
+
+function collisionDetect() {
+	for(int i = 0; i < dirs.length; i++) {
+		ray = new THREE.Raycaster();
+		ray.ray.direction.set(dirs[i]);
+
+		ray.ray.origin.copy( controls.getObject().position );
+		ray.ray.origin.y -= collision_distance;
+
+		var intersections = ray.intersectObjects( [map] );
+
+		if ( intersections.length > 0 ) {
+			var distance = intersections[ 0 ].distance;
+			if ( distance > 0 && distance < collision_distance ) {
+				console.log('intersection: ' + intersections[0].distance);
+				controls.isOnObject( true );
+				controls.getObject().position.y += collision_distance - distance;
+			}
+		}
+	}
+}
+
 function animate() {
 	requestAnimationFrame( animate );
 
 	controls.isOnObject( false );
 
-	ray.ray.origin.copy( controls.getObject().position );
-	ray.ray.origin.y -= collision_distance;
-
-	var intersections = ray.intersectObjects( [map] );
-
-	if ( intersections.length > 0 ) {
-		var distance = intersections[ 0 ].distance;
-		if ( distance > 0 && distance < collision_distance ) {
-			console.log('intersection: ' + intersections[0].distance);
-			controls.isOnObject( true );
-			controls.getObject().position.y += collision_distance - distance;
-		}
-	}
+	collisionDetect();
 	controls.update( Date.now() - time );
 	renderer.render( scene, camera );
 	time = Date.now();
