@@ -9,7 +9,7 @@ var bbox_maxs = [0.5, 2, 0.5];
 
 var map = [];
 
-var ray;
+var ray, dirVec;
 
 var blocker = document.getElementById( 'blocker' );
 var instructions = document.getElementById( 'instructions' );
@@ -130,32 +130,28 @@ function collisionDetect() {
 		[ bbox_mins[0], bbox_maxs[1], bbox_maxs[2] ],
 		[ bbox_maxs[0], bbox_mins[1], bbox_mins[2] ],
 		[ bbox_maxs[0], bbox_mins[1], bbox_maxs[2] ],
-		[ bbox_maxs[0], bbox_maxs[1], bbox_maxs[2] ],
+		[ bbox_maxs[0], bbox_maxs[1], bbox_mins[2] ],
 		[ bbox_maxs[0], bbox_maxs[1], bbox_maxs[2] ],
 	];
 
 	for(var i = 0; i < dirs.length; i++) {
 		ray = new THREE.Raycaster();
+		dirVec = new THREE.Vector3(dirs[i][0], dirs[i][1], dirs[i][2]).normalize();
 		//ray.ray.direction.set(dirs[i][0], dirs[i][1], dirs[i][2]);
 
-		var dirVec = new THREE.Vector3(dirs[i][0], dirs[i][1], dirs[i][2]).normalize();
 		//ray.ray.origin.copy( controls.getObject().position );
-		console.log('before');
-		console.log(dirVec);
 		ray.set(controls.getObject().position, new THREE.Vector3().copy(dirVec).multiplyScalar(collision_distance));
-
-		console.log('after');
-		console.log(dirVec);
 
 		var intersections = ray.intersectObjects( [map] );
 
 		if ( intersections.length > 0 ) {
+			console.log(intersections);
 			var distance = intersections[ 0 ].distance;
-			//console.log('distance: ' + intersections[0].distance);
 			if ( distance > 0 && distance < collision_distance ) {
 			//	console.log('intersection: ' + intersections[0].distance);
 				controls.isOnObject( true );
-				controls.getObject().position.sub(new THREE.Vector3().copy(dirVec).multiplyScalar((collision_distance - distance)));
+				var normal = intersections[0].face.normal;
+				controls.getObject().position.add(new THREE.Vector3().copy(normal).multiplyScalar((collision_distance - distance)));
 			}
 		}
 	}
