@@ -4,8 +4,8 @@ var controls,time = Date.now();
 var map_scale = 10;
 
 var collision_distance = 5;
-var bbox_mins = [-0.5, 0, -0.5];
-var bbox_maxs = [0.5, 2, 0.5];
+var bbox_mins = [-0.5, -2.0, -0.5];
+var bbox_maxs = [0.5, 0.5, 0.5];
 
 var map = [];
 
@@ -145,7 +145,7 @@ function collisionDetect() {
 		var intersections = ray.intersectObjects( [map] );
 
 		if ( intersections.length > 0 ) {
-			console.log(intersections);
+			//console.log(intersections);
 			var distance = intersections[ 0 ].distance;
 			if ( distance > 0 && distance < collision_distance ) {
 			//	console.log('intersection: ' + intersections[0].distance);
