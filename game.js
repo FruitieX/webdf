@@ -3,7 +3,8 @@ var geometry, material, mesh;
 var controls,time = Date.now();
 var map_scale = 10;
 
-var collision_distance = 5;
+var collision_distance = 8;
+var epsilon = 0.1;
 var bbox_mins = [-0.5, -2.0, -0.5];
 var bbox_maxs = [0.5, 0.5, 0.5];
 
@@ -140,7 +141,7 @@ function collisionDetect() {
 		//ray.ray.direction.set(dirs[i][0], dirs[i][1], dirs[i][2]);
 
 		//ray.ray.origin.copy( controls.getObject().position );
-		ray.set(controls.getObject().position, new THREE.Vector3().copy(dirVec).multiplyScalar(collision_distance));
+		ray.set(controls.getObject().position, new THREE.Vector3().copy(dirVec).multiplyScalar(collision_distance + epsilon));
 
 		var intersections = ray.intersectObjects( [map] );
 
@@ -149,10 +150,18 @@ function collisionDetect() {
 			for(var j = 0; j < intersections.length; j++) {
 				//console.log(intersections);
 				var distance = intersections[j].distance;
-				if ( distance > 0 && distance < collision_distance ) {
-				//	console.log('intersection: ' + intersections[0].distance);
-					controls.isOnObject( true );
-					var normal = intersections[j].face.normal;
+				var normal = intersections[j].face.normal;
+				if ( distance > 0 && distance <= collision_distance + epsilon) {
+					//console.log('intersection: ' + intersections[0].distance);
+
+					// check how large the angle between intersected face normal
+					// and a flat ground plane normal is, set isOnObject accordingly
+					//console.log(normal.dot(new THREE.Vector3(0, 1, 0)));
+					if(normal.dot(new THREE.Vector3(0, 1, 0)) > 0.8) {
+						controls.isOnObject( true );
+					}
+
+					// push player back from face along its normal
 					controls.getObject().position.add(new THREE.Vector3().copy(normal).multiplyScalar((collision_distance - distance)));
 				}
 			}
