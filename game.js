@@ -33,11 +33,11 @@ if ( havePointerLock ) {
 
 			instructions.style.display = '';
 		}
-	}
+	};
 
 	var pointerlockerror = function ( event ) {
 		instructions.style.display = '';
-	}
+	};
 
 	// Hook pointer lock state change events
 	document.addEventListener( 'pointerlockchange', pointerlockchange, false );
@@ -62,7 +62,7 @@ if ( havePointerLock ) {
 
 					element.requestPointerLock();
 				}
-			}
+			};
 			document.addEventListener( 'fullscreenchange', fullscreenchange, false );
 			document.addEventListener( 'mozfullscreenchange', fullscreenchange, false );
 			element.requestFullscreen = element.requestFullscreen || element.mozRequestFullscreen || element.mozRequestFullScreen || element.webkitRequestFullscreen;
@@ -88,7 +88,7 @@ function init() {
 	light.position.set( 1, 1, 1 );
 	scene.add( light );
 
-	var light = new THREE.DirectionalLight( 0xffffff, 0.75 );
+	light = new THREE.DirectionalLight( 0xffffff, 0.75 );
 	light.position.set( -1, - 0.5, -1 );
 	scene.add( light );
 
@@ -122,33 +122,40 @@ function onWindowResize() {
 	renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
-var dirs = [
-	[ bbox_mins[0], bbox_mins[1], bbox_mins[2]) ],
-	[ bbox_mins[0], bbox_mins[1], bbox_maxs[2]) ],
-	[ bbox_mins[0], bbox_maxs[1], bbox_mins[2]) ],
-	[ bbox_mins[0], bbox_maxs[1], bbox_maxs[2]) ],
-	[ bbox_maxs[0], bbox_mins[1], bbox_mins[2]) ],
-	[ bbox_maxs[0], bbox_mins[1], bbox_maxs[2]) ],
-	[ bbox_maxs[0], bbox_maxs[1], bbox_maxs[2]) ],
-	[ bbox_maxs[0], bbox_maxs[1], bbox_maxs[2]) ],
-];
-
 function collisionDetect() {
-	for(int i = 0; i < dirs.length; i++) {
-		ray = new THREE.Raycaster();
-		ray.ray.direction.set(dirs[i]);
+	var dirs = [
+		[ bbox_mins[0], bbox_mins[1], bbox_mins[2] ],
+		[ bbox_mins[0], bbox_mins[1], bbox_maxs[2] ],
+		[ bbox_mins[0], bbox_maxs[1], bbox_mins[2] ],
+		[ bbox_mins[0], bbox_maxs[1], bbox_maxs[2] ],
+		[ bbox_maxs[0], bbox_mins[1], bbox_mins[2] ],
+		[ bbox_maxs[0], bbox_mins[1], bbox_maxs[2] ],
+		[ bbox_maxs[0], bbox_maxs[1], bbox_maxs[2] ],
+		[ bbox_maxs[0], bbox_maxs[1], bbox_maxs[2] ],
+	];
 
-		ray.ray.origin.copy( controls.getObject().position );
-		ray.ray.origin.y -= collision_distance;
+	for(var i = 0; i < dirs.length; i++) {
+		ray = new THREE.Raycaster();
+		//ray.ray.direction.set(dirs[i][0], dirs[i][1], dirs[i][2]);
+
+		var dirVec = new THREE.Vector3(dirs[i][0], dirs[i][1], dirs[i][2]).normalize();
+		//ray.ray.origin.copy( controls.getObject().position );
+		console.log('before');
+		console.log(dirVec);
+		ray.set(controls.getObject().position, new THREE.Vector3().copy(dirVec).multiplyScalar(collision_distance));
+
+		console.log('after');
+		console.log(dirVec);
 
 		var intersections = ray.intersectObjects( [map] );
 
 		if ( intersections.length > 0 ) {
 			var distance = intersections[ 0 ].distance;
+			//console.log('distance: ' + intersections[0].distance);
 			if ( distance > 0 && distance < collision_distance ) {
-				console.log('intersection: ' + intersections[0].distance);
+			//	console.log('intersection: ' + intersections[0].distance);
 				controls.isOnObject( true );
-				controls.getObject().position.y += collision_distance - distance;
+				controls.getObject().position.sub(new THREE.Vector3().copy(dirVec).multiplyScalar((collision_distance - distance)));
 			}
 		}
 	}
