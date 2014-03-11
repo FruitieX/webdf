@@ -6,6 +6,7 @@ var IO_PORT = 8081;
 
 var static = require('node-static');
 var io = require('socket.io').listen(IO_PORT);
+var inspect = require('util').inspect;
 
 var file = new static.Server('./');
 
@@ -23,7 +24,8 @@ process.on('uncaughtException', function (err) {
 
 io.sockets.on('connection', function(socket) {
 	socket.on('pos', function(data) {
-		console.log('pos update: ' + data);
+		console.log('pos update:')
+		console.log(inspect(data));
 	});
 });
 console.log('socket.io listening on port ' + IO_PORT);
