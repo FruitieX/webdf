@@ -18,6 +18,7 @@ var moveRight = false;
 var isOnObject = false;
 var canJump = false;
 
+var socket;
 
 var map = [];
 
@@ -39,7 +40,7 @@ if ( havePointerLock ) {
 		} else {
 			controls.enabled = false;
 
-			blocker.style.display = '-webkit-box';
+			blocker.style.display = '-webkit-box';init
 			blocker.style.display = '-moz-box';
 			blocker.style.display = 'box';
 
@@ -162,7 +163,7 @@ animate();
 
 function init() {
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
-
+	socket = io.socket("http://localhost:8081");
 	scene = new THREE.Scene();
 	scene.fog = new THREE.Fog( 0xffffff, 0, 750 );
 
@@ -273,15 +274,18 @@ function doMove(delta) {
 				}
 			}
 		}
-	}
+	}	
 }
 
 function animate() {
+
 	requestAnimationFrame( animate );
 
 	controls.update( Date.now() - time );
 	doMove(Date.now() - time);
-
+	
+	socket.emit("pos", controls.getObject().position);
+	
 	renderer.render( scene, camera );
 	time = Date.now();
 }
