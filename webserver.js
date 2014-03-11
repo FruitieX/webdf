@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-// serve a nice webpage on port 8000
+// serve a nice webpage on port 8080
 var PORT = 8080;
 var static = require('node-static');
 
