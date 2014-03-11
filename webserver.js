@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
-// serve a nice webpage on port 8000
+// serve a nice webpage on port 8080
 var WWW_PORT = 8080;
-var IO_PORT = 8081
+var IO_PORT = 8081;
+
 var static = require('node-static');
 var io = require('socket.io').listen(IO_PORT);
 
