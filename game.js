@@ -19,6 +19,7 @@ var isOnObject = false;
 var canJump = false;
 
 var socket;
+var uid;
 
 var map = [];
 
@@ -162,8 +163,11 @@ init();
 animate();
 
 function init() {
-	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
+	// create random UID for player
+	uid = Math.random().toString().substr(2);
 	socket = io.connect("http://localhost:8081");
+
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
 	scene = new THREE.Scene();
 	scene.fog = new THREE.Fog( 0xffffff, 0, 750 );
 
@@ -284,7 +288,10 @@ function animate() {
 	controls.update( Date.now() - time );
 	doMove(Date.now() - time);
 
-	socket.emit("update", controls.getObject().position);
+	socket.emit("update", {
+		'uid': uid,
+		'pos': controls.getObject().position
+	});
 
 	renderer.render( scene, camera );
 	time = Date.now();
@@ -292,5 +299,5 @@ function animate() {
 
 socket.on('update', function(data) {
 	console.log('Update: ');
-//console.log(data);
+	console.log(data);
 });
