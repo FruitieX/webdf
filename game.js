@@ -283,9 +283,14 @@ function animate() {
 
 	controls.update( Date.now() - time );
 	doMove(Date.now() - time);
-	
-	socket.emit("pos", controls.getObject().position);
-	
+
+	socket.emit("update", controls.getObject().position);
+
 	renderer.render( scene, camera );
 	time = Date.now();
 }
+
+socket.on('update', function(data) {
+	console.log('Update: ');
+//console.log(data);
+});

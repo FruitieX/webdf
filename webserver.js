@@ -23,9 +23,10 @@ process.on('uncaughtException', function (err) {
 });
 
 io.sockets.on('connection', function(socket) {
-	socket.on('pos', function(data) {
-		console.log('pos update:')
-		console.log(inspect(data));
+	socket.on('update', function(data) {
+		socket.broadcast.emit('update', data);
+		//console.log('update:')
+		//console.log(inspect(data));
 	});
 });
 console.log('socket.io listening on port ' + IO_PORT);
