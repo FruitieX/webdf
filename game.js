@@ -274,7 +274,7 @@ function doMove(delta) {
 				}
 			}
 		}
-	}	
+	}
 }
 
 function animate() {
