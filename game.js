@@ -8,6 +8,7 @@ var epsilon = 0.1;
 var bbox_mins = [-0.5, -2.0, -0.5];
 var bbox_maxs = [0.5, 0.5, 0.5];
 
+
 // TODO: put these in a function
 var velocity = new THREE.Vector3();
 var moveForward = false;
@@ -22,6 +23,7 @@ var socket;
 var uid;
 
 var map = [];
+var player = [];
 
 var ray, dirVec;
 
@@ -194,6 +196,16 @@ function init() {
 		scene.add(map);
 	});
 
+	//load test player
+	loader.load( "res/player.js", function(json_geometry) {
+
+		player = new THREE.Mesh( json_geometry, new THREE.MeshBasicMaterial() );
+		player.position.x = 10;
+		player.position.y = 10;
+		player.position.z = 10;
+		scene.add(player);
+	});
+	
 	renderer = new THREE.WebGLRenderer();
 	renderer.setClearColor( 0xffffff );
 	renderer.setSize( window.innerWidth, window.innerHeight );
@@ -300,4 +312,8 @@ function animate() {
 socket.on('update', function(data) {
 	console.log('Update: ');
 	console.log(data);
+
+	player.position.x = data.pos.x;
+	player.position.y = data.pos.y;
+	player.position.z = data.pos.z;
 });
