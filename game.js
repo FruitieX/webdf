@@ -164,6 +164,24 @@ document.addEventListener( 'keyup', onKeyUp, false );
 init();
 animate();
 
+var Shoot = function (){
+	
+	var dirVector = controls.getDirection();
+	var shootline = new THREE.RayCaster();
+	
+	shootline.set( yawObject.position, dirVector );
+	
+	var intersections = ray.intersectObjects( [player, map] );
+	console.log(intersections);
+	if(intersections.length > 1){
+		while(var i; i < intersections.length; i++){
+			
+		}
+	}
+	
+	
+}
+
 function init() {
 	// create random UID for player
 	uid = Math.random().toString().substr(2);
