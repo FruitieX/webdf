@@ -158,11 +158,6 @@ var onKeyUp = function ( event ) {
 
 };
 
-var shoot = function() {
-	console.log("BANG!");
-}
-
-var throttledShoot = _.throttle(shoot, 1000, {trailing: false}); // refire time :-)
 var onMouseDown = function ( event ) {
 	throttledShoot();
 }
@@ -177,23 +172,26 @@ document.addEventListener( 'mousedown', onMouseDown, false );
 init();
 animate();
 
-var Shoot = function (){
+var shoot = function (){
 	
-	var dirVector = controls.getDirection();
-	var shootline = new THREE.RayCaster();
+	var dirVector = new THREE.Vector3(1,0,0);
+	controls.getDirection(dirVector);
+	var shootline = new THREE.Raycaster();
 	
-	shootline.set( yawObject.position, dirVector );
+	var yawObject = controls.getObject();
 	
+	shootline.set( yawObject.position, dirVector);
+
 	var intersections = ray.intersectObjects( [player, map] );
+	
+	
 	console.log(intersections);
-	if(intersections.length > 1){
-		while(var i; i < intersections.length; i++){
-			
-		}
-	}
+
 	
 	
 }
+
+var throttledShoot = _.throttle(shoot, 1000, {trailing: false}); // refire time >:-(
 
 function init() {
 	// create random UID for player
