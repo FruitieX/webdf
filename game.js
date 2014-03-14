@@ -158,8 +158,21 @@ var onKeyUp = function ( event ) {
 
 };
 
+var shoot = function() {
+	console.log("BANG!");
+}
+
+var throttledShoot = _.throttle(shoot, 1000, {trailing: false}); // refire time :-)
+var onMouseDown = function ( event ) {
+	throttledShoot();
+}
+
+
 document.addEventListener( 'keydown', onKeyDown, false );
 document.addEventListener( 'keyup', onKeyUp, false );
+document.addEventListener( 'mousedown', onMouseDown, false );
+//document.addEventListener( 'mouseup', onKeyUp, false );
+
 
 init();
 animate();
@@ -283,6 +296,8 @@ function doMove(delta) {
 		//ray.ray.direction.set(dirs[i][0], dirs[i][1], dirs[i][2]);
 
 		//ray.ray.origin.copy( controls.getObject().position );
+		//shoot();
+		//}
 		ray.set(yawObject.position, new THREE.Vector3().copy(dirVec).multiplyScalar(collision_distance + epsilon));
 
 		var intersections = ray.intersectObjects( [map] );
