@@ -358,10 +358,6 @@ function animate() {
 	time = Date.now();
 }
 
-socket.on('p_disconnected', function(data) {
-
-});
-
 socket.on('update', function(data) {
 	//console.log('Update: ');
 	//console.log(data);
