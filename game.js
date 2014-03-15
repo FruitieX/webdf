@@ -236,9 +236,7 @@ function init() {
 	loader.load( "res/player.js", function(json_geometry) {
 
 		player = new THREE.Mesh( json_geometry, new THREE.MeshBasicMaterial() );
-		player.position.x = 10;
-		player.position.y = 10;
-		player.position.z = 10;
+		player.scale.set( 2, 2, 2 );
 		scene.add(player);
 	});
 
@@ -352,6 +350,6 @@ socket.on('update', function(data) {
 	//console.log(data);
 
 	player.position.x = data.pos.x;
-	player.position.y = data.pos.y;
+	player.position.y = data.pos.y - 7;
 	player.position.z = data.pos.z;
 });
