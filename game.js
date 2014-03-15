@@ -241,7 +241,7 @@ function init() {
 		player.position.z = 10;
 		scene.add(player);
 	});
-	
+
 	renderer = new THREE.WebGLRenderer();
 	renderer.setClearColor( 0xffffff );
 	renderer.setSize( window.innerWidth, window.innerHeight );
