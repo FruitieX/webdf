@@ -28,6 +28,8 @@ var players = {}
 
 var ray, dirVec;
 
+var score = 0;
+
 var blocker = document.getElementById( 'blocker' );
 var instructions = document.getElementById( 'instructions' );
 
@@ -204,6 +206,10 @@ var shoot = function (){
 					socket.emit('hit', {
 						'uid': uid
 					});
+
+					score++;
+					$("#score").html("Score: " + score);
+					return;
 				}
 			});
 		}
@@ -389,7 +395,12 @@ socket.on('update', function(data) {
 });
 
 socket.on('hit', function(data) {
-	console.log("you got hit!")
+	console.log("you got hit!");
+	var yawObject = controls.getObject();
+	// neat hardcoded spawnpoint for now :)
+	yawObject.position.x = 0;
+	yawObject.position.y = 10;
+	yawObject.position.z = 0;
 });
 
 socket.on('p_disconnected', function(data) {
