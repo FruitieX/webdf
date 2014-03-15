@@ -21,6 +21,7 @@ var canJump = false;
 
 var socket;
 var uid;
+var map_uuid;
 
 var map = [];
 var player = [];
@@ -173,25 +174,30 @@ init();
 animate();
 
 var shoot = function (){
-	
 	var dirVector = new THREE.Vector3(1,0,0);
 	controls.getDirection(dirVector);
-	var shootline = new THREE.Raycaster();
-	
+	var ray = new THREE.Raycaster();
 	var yawObject = controls.getObject();
-	
-	shootline.set( yawObject.position, dirVector);
+	ray.set( yawObject.position, dirVector);
 
 	var intersections = ray.intersectObjects( [player, map] );
-	
-	
-	console.log(intersections);
-
-	
-	
+	if(intersections.length) {
+		intersections.sort(function(a, b) {
+			if(a.distance <= b.distance)
+				return -1;
+			return 1;
+		});
+		if(intersections[0].object.uuid === map_uuid) {
+			console.log('hit map: ' + intersections[0].distance);
+		} else {
+			console.log('hit player: ' + intersections[0].distance);
+			console.log('uuid: ' + intersections[0].object.uuid);
+		}
+	}
 }
 
-var throttledShoot = _.throttle(shoot, 1000, {trailing: false}); // refire time >:-(
+var RELOAD_TIME = 100;
+var throttledShoot = _.throttle(shoot, RELOAD_TIME, {trailing: false}); // refire time >:-(
 
 function init() {
 	// create random UID for player
@@ -221,6 +227,7 @@ function init() {
 		map.position.x = 0;
 		map.position.y = 0;
 		map.position.z = 0;
+		map_uuid = map.uuid;
 
 		scene.add(map);
 	});
@@ -341,8 +348,8 @@ function animate() {
 }
 
 socket.on('update', function(data) {
-	console.log('Update: ');
-	console.log(data);
+	//console.log('Update: ');
+	//console.log(data);
 
 	player.position.x = data.pos.x;
 	player.position.y = data.pos.y;
