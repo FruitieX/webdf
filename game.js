@@ -24,7 +24,7 @@ var uid;
 var map_uuid;
 
 var map = [];
-var player = [];
+var players = {}
 
 var ray, dirVec;
 
@@ -180,7 +180,12 @@ var shoot = function (){
 	var yawObject = controls.getObject();
 	ray.set( yawObject.position, dirVector);
 
-	var intersections = ray.intersectObjects( [player, map] );
+	var intersect_objs = [map];
+	_.each(players, function(player) {
+		intersect_objs.push(player.model);
+	});
+
+	var intersections = ray.intersectObjects(intersect_objs);
 	if(intersections.length) {
 		intersections.sort(function(a, b) {
 			if(a.distance <= b.distance)
@@ -191,7 +196,16 @@ var shoot = function (){
 			console.log('hit map: ' + intersections[0].distance);
 		} else {
 			console.log('hit player: ' + intersections[0].distance);
-			console.log('uuid: ' + intersections[0].object.uuid);
+			console.log('model uuid: ' + intersections[0].object.uuid);
+			_.each(players, function(player, uid) {
+				// found the player that we hit
+				if (player.model.uuid === intersections[0].object.uuid) {
+					console.log('hit player uid ' + uid);
+					socket.emit('hit', {
+						'uid': uid
+					});
+				}
+			});
 		}
 	}
 }
@@ -206,6 +220,7 @@ function init() {
 
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
 	scene = new THREE.Scene();
+	console.log(scene);
 	scene.fog = new THREE.Fog( 0xffffff, 0, 750 );
 
 	var light = new THREE.DirectionalLight( 0xffffff, 1.5 );
@@ -230,14 +245,6 @@ function init() {
 		map_uuid = map.uuid;
 
 		scene.add(map);
-	});
-
-	//load test player
-	loader.load( "res/player.js", function(json_geometry) {
-
-		player = new THREE.Mesh( json_geometry, new THREE.MeshBasicMaterial() );
-		player.scale.set( 2, 2, 2 );
-		scene.add(player);
 	});
 
 	renderer = new THREE.WebGLRenderer();
@@ -269,10 +276,10 @@ function doMove(delta) {
 
 	delta *= 0.05;
 
-	velocity.x += ( - velocity.x ) * 0.08 * delta;
-	velocity.z += ( - velocity.z ) * 0.08 * delta;
+	velocity.x += ( - velocity.x ) * 0.10 * delta;
+	velocity.z += ( - velocity.z ) * 0.10 * delta;
 
-	velocity.y -= 0.05 * delta;
+	velocity.y -= 0.075 * delta;
 
 	if ( moveForward ) velocity.z -= 0.10 * delta;
 	if ( moveBackward ) velocity.z += 0.10 * delta;
@@ -336,8 +343,8 @@ function animate() {
 	controls.update( Date.now() - time );
 	doMove(Date.now() - time);
 
+	//'uid': uid,
 	socket.emit("update", {
-		'uid': uid,
 		'pos': controls.getObject().position
 	});
 
@@ -345,11 +352,49 @@ function animate() {
 	time = Date.now();
 }
 
+socket.on('p_disconnected', function(data) {
+
+});
+
 socket.on('update', function(data) {
 	//console.log('Update: ');
 	//console.log(data);
 
-	player.position.x = data.pos.x;
-	player.position.y = data.pos.y - 7;
-	player.position.z = data.pos.z;
+	if(data.uid in players) {
+		var player = players[data.uid];
+
+		// still loading model?
+		if(player.model) {
+			player.model.position.x = data.pos.x;
+			player.model.position.y = data.pos.y - 7;
+			player.model.position.z = data.pos.z;
+		}
+	} else {
+		var player = {};
+
+		console.log('new player connected with uid ' + data.uid);
+		// insert new model
+		loader.load( "res/player.js", function(json_geometry) {
+			player.model = new THREE.Mesh( json_geometry, new THREE.MeshBasicMaterial() );
+			player.model.scale.set( 2, 2, 2 );
+			scene.add(player.model);
+
+			player.model.position.x = data.pos.x;
+			player.model.position.y = data.pos.y - 7;
+			player.model.position.z = data.pos.z;
+		});
+
+		players[data.uid] = player;
+	}
 });
+
+socket.on('hit', function(data) {
+	console.log("you got hit!")
+});
+
+socket.on('p_disconnected', function(data) {
+	console.log('player with uid ' + data + ' disconnected.');
+	scene.remove(players[data].model);
+	delete players[data];
+});
+

@@ -24,9 +24,16 @@ process.on('uncaughtException', function (err) {
 
 io.sockets.on('connection', function(socket) {
 	socket.on('update', function(data) {
+		data.uid = socket.id;
 		socket.broadcast.emit('update', data);
 		//console.log('update:')
 		//console.log(inspect(data));
+	});
+	socket.on('hit', function(data) {
+		io.sockets.socket(data.uid).emit('hit', data);
+	});
+	socket.on('disconnect', function(data) {
+		socket.broadcast.emit('p_disconnected', socket.id);
 	});
 });
 console.log('socket.io listening on port ' + IO_PORT);
