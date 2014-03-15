@@ -210,7 +210,7 @@ var shoot = function (){
 	}
 }
 
-var RELOAD_TIME = 100;
+var RELOAD_TIME = 1000;
 var throttledShoot = _.throttle(shoot, RELOAD_TIME, {trailing: false}); // refire time >:-(
 
 function init() {
