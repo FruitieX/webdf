@@ -247,7 +247,8 @@ function init() {
 	// load map
 	loader = new THREE.JSONLoader();
 	loader.load( "res/map.js", function(json_geometry) {
-		map = new THREE.Mesh( json_geometry, new THREE.MeshPhongMaterial() );
+		material = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('res/grid.png') });
+		map = new THREE.Mesh( json_geometry, material );
 		map.scale.set( map_scale, map_scale, map_scale );
 		map.position.x = 0;
 		map.position.y = 0;
