@@ -227,12 +227,18 @@ function init() {
 	console.log(scene);
 	scene.fog = new THREE.Fog( 0xffffff, 0, 750 );
 
-	var light = new THREE.DirectionalLight( 0xffffff, 1.5 );
-	light.position.set( 1, 1, 1 );
+	// ambient light for really dark spots
+	var light = new THREE.AmbientLight( 0x0e0502 );
 	scene.add( light );
 
-	light = new THREE.DirectionalLight( 0xffffff, 0.75 );
-	light.position.set( -1, - 0.5, -1 );
+	light = new THREE.PointLight( 0xb8e8f8, 0.5, 0 );
+	light.position.set( 10000, 10000, 10000 );
+	scene.add( light );
+	light = new THREE.PointLight( 0xb8e8f8, 0.5, 0 );
+	light.position.set( -10000, 10000, -10000 );
+	scene.add( light );
+	light = new THREE.PointLight( 0xb8e8f8, 0.5, 0 );
+	light.position.set( 0, -10000, 0 );
 	scene.add( light );
 
 	controls = new THREE.PointerLockControls( camera );
@@ -241,7 +247,7 @@ function init() {
 	// load map
 	loader = new THREE.JSONLoader();
 	loader.load( "res/map.js", function(json_geometry) {
-		map = new THREE.Mesh( json_geometry, new THREE.MeshNormalMaterial() );
+		map = new THREE.Mesh( json_geometry, new THREE.MeshPhongMaterial() );
 		map.scale.set( map_scale, map_scale, map_scale );
 		map.position.x = 0;
 		map.position.y = 0;
