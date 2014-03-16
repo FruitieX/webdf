@@ -7,7 +7,7 @@ var collision_distance = 8;
 var epsilon = 0.1;
 var bbox_mins = [-0.5, -2.0, -0.5];
 var bbox_maxs = [0.5, 0.5, 0.5];
-
+var rotationVector = new THREE.Vector3(1,0,0);
 
 // TODO: put these in a function
 var velocity = new THREE.Vector3();
@@ -362,12 +362,15 @@ function animate() {
 
 	requestAnimationFrame( animate );
 
+	controls.getDirection( rotationVector );
 	controls.update( Date.now() - time );
 	doMove(Date.now() - time);
 
+	
 	//'uid': uid,
 	socket.emit("update", {
-		'pos': controls.getObject().position
+		'pos': controls.getObject().position,
+		'rotX': rotationVector
 	});
 
 	renderer.render( scene, camera );
@@ -392,6 +395,9 @@ socket.on('update', function(data) {
 			player.model.position.x = data.pos.x;
 			player.model.position.y = data.pos.y - 7;
 			player.model.position.z = data.pos.z;
+			
+			
+			
 		}
 	} else {
 		var player = {};
@@ -406,6 +412,8 @@ socket.on('update', function(data) {
 			player.model.position.x = data.pos.x;
 			player.model.position.y = data.pos.y - 7;
 			player.model.position.z = data.pos.z;
+			player.model.setRotationFromEuler(data.rotv);
+			
 		});
 
 		players[data.uid] = player;
