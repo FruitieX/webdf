@@ -224,8 +224,7 @@ function init() {
 
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
 	scene = new THREE.Scene();
-	console.log(scene);
-	scene.fog = new THREE.Fog( 0xffffff, 0, 750 );
+	scene.fog = new THREE.Fog( 0x000000, 0, 250 );
 
 	// ambient light for really dark spots
 	var light = new THREE.AmbientLight( 0x0e0502 );
