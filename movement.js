@@ -1,24 +1,36 @@
 var doMove = function(delta) {
 	delta *= 0.05;
 
-	velocity.x += ( - velocity.x ) * 0.10 * delta;
-	velocity.z += ( - velocity.z ) * 0.10 * delta;
+	var modifier = 0.10;
+	if(Math.sqrt(velocity.x * velocity.x + velocity.z * velocity.z) > 1) {
+		modifier = 0.01;
+	}
+	console.log(Math.sqrt(velocity.x * velocity.x + velocity.z * velocity.z));
 
-	velocity.y -= 0.075 * delta;
+	if ( moveForward ) velocity.z -= modifier * delta;
+	if ( moveBackward ) velocity.z += modifier * delta;
 
-	if ( moveForward ) velocity.z -= 0.10 * delta;
-	if ( moveBackward ) velocity.z += 0.10 * delta;
-
-	if ( moveLeft ) velocity.x -= 0.10 * delta;
-	if ( moveRight ) velocity.x += 0.10 * delta;
+	if ( moveLeft ) velocity.x -= modifier * delta;
+	if ( moveRight ) velocity.x += modifier * delta;
 
 	if (onGround === true) {
+		// clip y velocity so we don't fall through
 		velocity.y = Math.max( 0, velocity.y );
+
+		if (jump) {
+			velocity.y += 1;
+			onGround = false;
+		} else {
+			// friction
+			velocity.x += ( - velocity.x ) * 0.10 * delta;
+			velocity.z += ( - velocity.z ) * 0.10 * delta;
+		}
+	} else {
+		// gravity
+		velocity.y -= 0.075 * delta;
 	}
 
 	if (onGround === true && jump) {
-		velocity.y += 1;
-		onGround = false;
 	}
 
 	yawObject.translateX( velocity.x );
