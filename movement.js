@@ -2,10 +2,10 @@ var doMove = function(delta) {
 	delta *= 0.05;
 
 	var modifier = 0.10;
+	// limit acceleration a bit at higher speeds
 	if(Math.sqrt(velocity.x * velocity.x + velocity.z * velocity.z) > 1) {
-		modifier = 0.01;
+		modifier = 0.005;
 	}
-	console.log(Math.sqrt(velocity.x * velocity.x + velocity.z * velocity.z));
 
 	if ( moveForward ) velocity.z -= modifier * delta;
 	if ( moveBackward ) velocity.z += modifier * delta;
