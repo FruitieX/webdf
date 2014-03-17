@@ -18,9 +18,7 @@ var shoot = function (){
 	var intersections = ray.intersectObjects(intersect_objs);
 	if(intersections.length) {
 		intersections.sort(function(a, b) {
-			if(a.distance <= b.distance)
-				return -1;
-			return 1;
+			return a.distance - b.distance;
 		});
 		if(intersections[0].object.uuid === map_uuid) {
 			console.log('hit map, distance: ' + intersections[0].distance);
