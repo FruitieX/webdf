@@ -37,7 +37,7 @@ function animate() {
 	if (mouseDown)
 		shoot();
 
-	doMove(Date.now() - time);
+	doMove(Date.now() - prevFrameTime);
 	numFrames++;
 	throttledDrawFps();
 
@@ -47,7 +47,7 @@ function animate() {
 	});
 
 	renderer.render( scene, camera );
-	time = Date.now();
+	prevFrameTime = Date.now();
 
 	// we're falling and fast... probably fell out of map!
 	if(velocity.y < -10) {
