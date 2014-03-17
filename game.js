@@ -1,9 +1,7 @@
-init();
-animate();
-
 var init = function() {
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
 	scene = new THREE.Scene();
+	setupRenderer();
 	loadMap();
 	pointerLockSetup();
 }
@@ -45,3 +43,6 @@ function animate() {
 		respawn("Fell out of map");
 	}
 }
+
+init();
+animate();
