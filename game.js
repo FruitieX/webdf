@@ -227,7 +227,7 @@ function init() {
 	scene.fog = new THREE.Fog( 0x000000, 0, 250 );
 
 	// ambient light for really dark spots
-	var light = new THREE.AmbientLight( 0x0e0502 );
+	var light = new THREE.AmbientLight( 0x555555 );
 	scene.add( light );
 
 	light = new THREE.PointLight( 0xb8e8f8, 0.5, 0 );
@@ -246,7 +246,7 @@ function init() {
 	// load map
 	loader = new THREE.JSONLoader();
 	loader.load( "res/map.js", function(json_geometry) {
-		material = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('res/grid.png') });
+		material = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('res/lightmap.png') });
 		map = new THREE.Mesh( json_geometry, material );
 		map.scale.set( map_scale, map_scale, map_scale );
 		map.position.x = 0;
