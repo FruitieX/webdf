@@ -1,5 +1,3 @@
-var throttledShoot = _.throttle(shoot, RELOAD_TIME, {trailing: false}); // refire time >:-(
-
 var shoot = function (){
 	var dirVector = new THREE.Vector3(1,0,0);
 	dirVector = getLookDirection(dirVector);

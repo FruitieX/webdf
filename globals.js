@@ -32,6 +32,7 @@ var players = {}
 // game logic
 var score = 0;
 var RELOAD_TIME = 1000;
+var throttledShoot; // function, but needs underscore.js so it's loaded in init()
 
 // misc constants
 var PI_2 = Math.PI / 2;
