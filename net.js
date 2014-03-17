@@ -36,6 +36,7 @@ socket.on('update', function(data) {
 
 socket.on('hit', function(data) {
 	respawn("You got hit!");
+	setCenterprint("You were fragged by " + data);
 });
 
 socket.on('p_disconnected', function(data) {

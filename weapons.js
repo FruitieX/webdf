@@ -32,11 +32,7 @@ var shoot = function (){
 				if (player.model.uuid === intersections[0].object.uuid) {
 					console.log('hit player uid ' + uid);
 
-					clearTimeout(centerprintTimeout);
-					$("#centerprint").text("You fragged " + uid);
-					centerprintTimeout = setTimeout(function() {
-						$("#centerprint").text("");
-					}, 3000);
+					setCenterprint("You fragged " + uid);
 
 					socket.emit('hit', {
 						'uid': uid

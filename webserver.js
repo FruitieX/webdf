@@ -28,7 +28,7 @@ io.sockets.on('connection', function(socket) {
 		socket.broadcast.emit('update', data);
 	});
 	socket.on('hit', function(data) {
-		io.sockets.socket(data.uid).emit('hit', data);
+		io.sockets.socket(data.uid).emit('hit', socket.id);
 	});
 	socket.on('disconnect', function(data) {
 		socket.broadcast.emit('p_disconnected', socket.id);
