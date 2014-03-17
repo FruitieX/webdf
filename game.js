@@ -113,7 +113,7 @@ animate();
 
 var shoot = function (){
 	var dirVector = new THREE.Vector3(1,0,0);
-	getLookDirection(dirVector);
+	dirVector = getLookDirection(dirVector);
 	var ray = new THREE.Raycaster();
 	ray.set( yawObject.position, dirVector);
 
@@ -151,16 +151,14 @@ var shoot = function (){
 }
 
 var pitchObject, yawObject;
-var getLookDirection = function() {
+var getLookDirection = function(v) {
 	// assumes the camera itself is not rotated
-	var direction = new THREE.Vector3( 0, 0, -1 );
-	var rotation = new THREE.Euler( 0, 0, 0, "YXZ" );
+	var temp_direction = new THREE.Vector3( 0, 0, -1 );
+	var temp_rotation = new THREE.Euler( 0, 0, 0, "YXZ" );
 
-	return function( v ) {
-		rotation.set( pitchObject.rotation.x, yawObject.rotation.y, 0 );
-		v.copy( direction ).applyEuler( rotation );
-		return v;
-	}
+	temp_rotation.set( pitchObject.rotation.x, yawObject.rotation.y, 0 );
+	v.copy( temp_direction ).applyEuler( temp_rotation );
+	return v;
 };
 
 var RELOAD_TIME = 1000;
