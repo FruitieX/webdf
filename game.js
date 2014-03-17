@@ -407,8 +407,9 @@ socket.on('update', function(data) {
 		console.log('new player connected with uid ' + data.uid);
 		// insert new model
 		loader.load( "res/player.js", function(json_geometry) {
-			player.model = new THREE.Mesh( json_geometry, new THREE.MeshBasicMaterial() );
-			player.model.scale.set( 2, 2, 2 );
+			material = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('res/player.png') });
+			player.model = new THREE.Mesh( json_geometry, material );
+			player.model.scale.set( 3, 3, 3 );
 			scene.add(player.model);
 
 			player.model.position.x = data.pos.x;
