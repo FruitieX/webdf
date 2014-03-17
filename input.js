@@ -23,8 +23,7 @@ var onKeyDown = function ( event ) {
 			break;
 
 		case 32: // space
-			if ( canJump === true ) velocity.y += 1;
-			canJump = false;
+			jump = true;
 			break;
 	}
 };
@@ -52,6 +51,10 @@ var onKeyUp = function ( event ) {
 		case 68: // d
 			case 69:
 			moveRight = false;
+			break;
+
+		case 32: // space
+			jump = false;
 			break;
 	}
 };

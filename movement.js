@@ -23,17 +23,20 @@ var doMove = function(delta) {
 	if ( moveLeft ) velocity.x -= 0.10 * delta;
 	if ( moveRight ) velocity.x += 0.10 * delta;
 
-	if ( canJump === true ) {
-
+	if (onGround === true) {
 		velocity.y = Math.max( 0, velocity.y );
+	}
 
+	if (onGround === true && jump) {
+		velocity.y += 1;
+		onGround = false;
 	}
 
 	yawObject.translateX( velocity.x );
 	yawObject.translateY( velocity.y );
 	yawObject.translateZ( velocity.z );
 
-	canJump = false;
+	onGround = false;
 	for(var i = 0; i < dirs.length; i++) {
 		ray = new THREE.Raycaster();
 		dirVec = new THREE.Vector3(dirs[i][0], dirs[i][1], dirs[i][2]).normalize();
@@ -56,10 +59,10 @@ var doMove = function(delta) {
 					//console.log('intersection: ' + intersections[0].distance);
 
 					// check how large the angle between intersected face normal
-					// and a flat ground plane normal is, set canJump accordingly
+					// and a flat ground plane normal is, set onGround accordingly
 					//console.log(normal.dot(new THREE.Vector3(0, 1, 0)));
 					if(normal.dot(new THREE.Vector3(0, 1, 0)) > 0.8) {
-						canJump = true;
+						onGround = true;
 					}
 
 					// push player back from face along its normal
