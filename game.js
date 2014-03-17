@@ -334,12 +334,24 @@ var respawn = function(reason) {
 	velocity.z = 0;
 }
 
+var numFrames = 0;
+var lastFpsTime = Date.now();
+function draw_fps() {
+	console.log('fps: ' + numFrames / lastFpsTime / 1000);
+	numFrames = 0;
+	lastFpsTime = Date.now();
+}
+
+var throttledDrawFps = _.throttle(draw_fps, 1000, {trailing: false});
+
 function animate() {
 
 	requestAnimationFrame( animate );
 
 	controls.update( Date.now() - time );
 	doMove(Date.now() - time);
+	numFrames++;
+	throttledDrawFps();
 
 	//'uid': uid,
 	socket.emit("update", {
