@@ -23,15 +23,12 @@ var respawn = function(reason) {
 	velocity.z = 0;
 }
 
-var numFrames = 0;
-var lastFpsTime = Date.now();
-function draw_fps() {
-	console.log('fps: ' + numFrames / lastFpsTime / 1000);
+var draw_fps = function() {
+	$("#fps").html("FPS: " + Math.round(numFrames / (Date.now() - lastFpsTime) * 1000));
 	numFrames = 0;
 	lastFpsTime = Date.now();
 }
-
-var throttledDrawFps = _.throttle(draw_fps, 1000, {trailing: false});
+var throttledDrawFps = _.throttle(draw_fps, 1000);
 
 // main game loop
 function animate() {

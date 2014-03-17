@@ -34,6 +34,8 @@ var players = {}
 var score = 0;
 var RELOAD_TIME = 1000;
 var lastShoot;
+var numFrames = 0; // for fps counter
+var lastFpsTime = Date.now();
 
 // misc constants
 var PI_2 = Math.PI / 2;
