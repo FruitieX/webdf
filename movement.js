@@ -57,7 +57,10 @@ var onKeyUp = function ( event ) {
 };
 
 var onMouseDown = function ( event ) {
-	throttledShoot();
+	mouseDown = true;
+}
+var onMouseUp = function ( event ) {
+	mouseDown = false;
 }
 
 var onMouseMove = function ( event ) {
@@ -73,6 +76,7 @@ var onMouseMove = function ( event ) {
 document.addEventListener( 'keydown', onKeyDown, false );
 document.addEventListener( 'keyup', onKeyUp, false );
 document.addEventListener( 'mousedown', onMouseDown, false );
+document.addEventListener( 'mouseup', onMouseUp, false );
 document.addEventListener( 'mousemove', onMouseMove, false );
 
 var getLookDirection = function(v) {

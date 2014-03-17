@@ -1,4 +1,10 @@
 var shoot = function (){
+	// still reloading?
+	if(Date.now() - lastShoot < RELOAD_TIME)
+		return;
+
+	lastShoot = Date.now();
+
 	var dirVector = new THREE.Vector3(1,0,0);
 	dirVector = getLookDirection(dirVector);
 	var ray = new THREE.Raycaster();

@@ -14,7 +14,7 @@ var ray, dirVec;
 var bbox_mins = [-0.5, -2.0, -0.5];
 var bbox_maxs = [0.5, 0.5, 0.5];
 
-// movement
+// movement & input
 var pitchObject, yawObject;
 var velocity = new THREE.Vector3();
 var moveForward = false;
@@ -22,6 +22,7 @@ var moveBackward = false;
 var moveLeft = false;
 var moveRight = false;
 var canJump = false;
+var mouseDown;
 
 // networking
 var socket;
@@ -32,7 +33,7 @@ var players = {}
 // game logic
 var score = 0;
 var RELOAD_TIME = 1000;
-var throttledShoot; // function, but needs underscore.js so it's loaded in init()
+var lastShoot;
 
 // misc constants
 var PI_2 = Math.PI / 2;
