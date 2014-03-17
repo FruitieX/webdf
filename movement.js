@@ -1,15 +1,4 @@
 var doMove = function(delta) {
-	var dirs = [
-		[ bbox_mins[0], bbox_mins[1], bbox_mins[2] ],
-		[ bbox_mins[0], bbox_mins[1], bbox_maxs[2] ],
-		[ bbox_mins[0], bbox_maxs[1], bbox_mins[2] ],
-		[ bbox_mins[0], bbox_maxs[1], bbox_maxs[2] ],
-		[ bbox_maxs[0], bbox_mins[1], bbox_mins[2] ],
-		[ bbox_maxs[0], bbox_mins[1], bbox_maxs[2] ],
-		[ bbox_maxs[0], bbox_maxs[1], bbox_mins[2] ],
-		[ bbox_maxs[0], bbox_maxs[1], bbox_maxs[2] ],
-	];
-
 	delta *= 0.05;
 
 	velocity.x += ( - velocity.x ) * 0.10 * delta;
@@ -39,7 +28,7 @@ var doMove = function(delta) {
 	onGround = false;
 	for(var i = 0; i < dirs.length; i++) {
 		ray = new THREE.Raycaster();
-		dirVec = new THREE.Vector3(dirs[i][0], dirs[i][1], dirs[i][2]).normalize();
+		dirVec = dirs[i];
 		//ray.ray.direction.set(dirs[i][0], dirs[i][1], dirs[i][2]);
 
 		//ray.ray.origin.copy( controls.getObject().position );

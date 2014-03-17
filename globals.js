@@ -14,6 +14,9 @@ var ray, dirVec;
 var bbox_mins = [-0.5, -2.0, -0.5];
 var bbox_maxs = [0.5, 0.5, 0.5];
 
+// vectors pointing to all corners of bounding box from origin
+var dirs;
+
 // movement & input
 var pitchObject, yawObject;
 var velocity = new THREE.Vector3();
@@ -40,3 +43,17 @@ var lastFpsTime = Date.now();
 
 // misc constants
 var PI_2 = Math.PI / 2;
+
+// these depend on libraries imported in <head>, will be set when init() is ran
+var globalsInit = function() {
+	dirs = [
+		new THREE.Vector3(bbox_mins[0], bbox_mins[1], bbox_mins[2]).normalize(),
+		new THREE.Vector3(bbox_mins[0], bbox_mins[1], bbox_maxs[2]).normalize(),
+		new THREE.Vector3(bbox_mins[0], bbox_maxs[1], bbox_mins[2]).normalize(),
+		new THREE.Vector3(bbox_mins[0], bbox_maxs[1], bbox_maxs[2]).normalize(),
+		new THREE.Vector3(bbox_maxs[0], bbox_mins[1], bbox_mins[2]).normalize(),
+		new THREE.Vector3(bbox_maxs[0], bbox_mins[1], bbox_maxs[2]).normalize(),
+		new THREE.Vector3(bbox_maxs[0], bbox_maxs[1], bbox_mins[2]).normalize(),
+		new THREE.Vector3(bbox_maxs[0], bbox_maxs[1], bbox_maxs[2]).normalize(),
+	]
+};
