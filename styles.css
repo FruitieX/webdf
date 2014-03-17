@@ -25,3 +25,11 @@ html, body {
 	left:48%;
 	top:48%;
 }
+
+#crosshair_reloading {
+	position:absolute;
+	z-index:15;
+	left:48%;
+	top:48%;
+	opacity:0.0;
+}

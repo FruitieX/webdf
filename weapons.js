@@ -41,5 +41,8 @@ var shoot = function (){
 			});
 		}
 	}
-}
+};
 
+var crosshairReloadUpdate = function() {
+	$("#crosshair_reloading").css("opacity", (RELOAD_TIME - (Date.now() - lastShoot)) / RELOAD_TIME);
+};

@@ -41,6 +41,7 @@ function animate() {
 	doMove(Date.now() - prevFrameTime);
 	numFrames++;
 	throttledDrawFps();
+	crosshairReloadUpdate();
 
 	socket.emit("update", {
 		'pos': yawObject.position,
