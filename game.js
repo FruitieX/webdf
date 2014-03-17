@@ -1,6 +1,6 @@
 var camera, scene, renderer;
 var geometry, material, mesh;
-var controls,time = Date.now();
+var time = Date.now();
 var map_scale = 10;
 
 var collision_distance = 8;
@@ -15,7 +15,6 @@ var moveBackward = false;
 var moveLeft = false;
 var moveRight = false;
 
-var isOnObject = false;
 var canJump = false;
 
 var socket;
@@ -114,9 +113,8 @@ animate();
 
 var shoot = function (){
 	var dirVector = new THREE.Vector3(1,0,0);
-	controls.getDirection(dirVector);
+	getLookDirection(dirVector);
 	var ray = new THREE.Raycaster();
-	var yawObject = controls.getObject();
 	ray.set( yawObject.position, dirVector);
 
 	var intersect_objs = [map];
@@ -152,6 +150,19 @@ var shoot = function (){
 	}
 }
 
+var pitchObject, yawObject;
+var getLookDirection = function() {
+	// assumes the camera itself is not rotated
+	var direction = new THREE.Vector3( 0, 0, -1 );
+	var rotation = new THREE.Euler( 0, 0, 0, "YXZ" );
+
+	return function( v ) {
+		rotation.set( pitchObject.rotation.x, yawObject.rotation.y, 0 );
+		v.copy( direction ).applyEuler( rotation );
+		return v;
+	}
+};
+
 var RELOAD_TIME = 1000;
 var throttledShoot = _.throttle(shoot, RELOAD_TIME, {trailing: false}); // refire time >:-(
 
@@ -178,8 +189,28 @@ function init() {
 	light.position.set( 0, -10000, 0 );
 	scene.add( light );
 
-	controls = new THREE.PointerLockControls( camera );
-	scene.add( controls.getObject() );
+	//controls = PointerLockControls( camera );
+	pitchObject = new THREE.Object3D();
+	pitchObject.add( camera );
+
+	yawObject = new THREE.Object3D();
+	yawObject.position.y = 10;
+	yawObject.add( pitchObject );
+
+	var PI_2 = Math.PI / 2;
+	var onMouseMove = function ( event ) {
+		var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
+		var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+
+		yawObject.rotation.y -= movementX * 0.002;
+		pitchObject.rotation.x -= movementY * 0.002;
+
+		pitchObject.rotation.x = Math.max( - PI_2, Math.min( PI_2, pitchObject.rotation.x ) );
+	};
+
+	document.addEventListener( 'mousemove', onMouseMove, false );
+
+	scene.add( yawObject );
 
 	// load map
 	loader = new THREE.JSONLoader();
@@ -268,19 +299,17 @@ function doMove(delta) {
 	if ( moveLeft ) velocity.x -= 0.10 * delta;
 	if ( moveRight ) velocity.x += 0.10 * delta;
 
-	if ( isOnObject === true ) {
+	if ( canJump === true ) {
 
 		velocity.y = Math.max( 0, velocity.y );
 
 	}
 
-	var yawObject = controls.getObject();
-
 	yawObject.translateX( velocity.x );
 	yawObject.translateY( velocity.y );
 	yawObject.translateZ( velocity.z );
 
-	controls.isOnObject( false );
+	canJump = false;
 	for(var i = 0; i < dirs.length; i++) {
 		ray = new THREE.Raycaster();
 		dirVec = new THREE.Vector3(dirs[i][0], dirs[i][1], dirs[i][2]).normalize();
@@ -303,14 +332,14 @@ function doMove(delta) {
 					//console.log('intersection: ' + intersections[0].distance);
 
 					// check how large the angle between intersected face normal
-					// and a flat ground plane normal is, set isOnObject accordingly
+					// and a flat ground plane normal is, set canJump accordingly
 					//console.log(normal.dot(new THREE.Vector3(0, 1, 0)));
 					if(normal.dot(new THREE.Vector3(0, 1, 0)) > 0.8) {
-						controls.isOnObject( true );
+						canJump = true;
 					}
 
 					// push player back from face along its normal
-					controls.getObject().position.add(new THREE.Vector3().copy(normal).multiplyScalar((collision_distance - distance)));
+					yawObject.position.add(new THREE.Vector3().copy(normal).multiplyScalar((collision_distance - distance)));
 				}
 			}
 		}
@@ -324,7 +353,6 @@ var updateScore = function(cnt) {
 
 var respawn = function(reason) {
 	console.log(reason);
-	var yawObject = controls.getObject();
 	// neat hardcoded spawnpoint for now :)
 	yawObject.position.x = 0;
 	yawObject.position.y = 10;
@@ -338,13 +366,13 @@ function animate() {
 
 	requestAnimationFrame( animate );
 
-	controls.update( Date.now() - time );
+	//controls.update( Date.now() - time );
 	doMove(Date.now() - time);
 
 	//'uid': uid,
 	socket.emit("update", {
-		'pos': controls.getObject().position,
-		'rotY': controls.getObject().rotation._y
+		'pos': yawObject.position,
+		'rotY': yawObject.rotation._y
 	});
 
 	renderer.render( scene, camera );
