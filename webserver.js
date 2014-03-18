@@ -33,5 +33,8 @@ io.sockets.on('connection', function(socket) {
 	socket.on('disconnect', function(data) {
 		socket.broadcast.emit('p_disconnected', socket.id);
 	});
+	socket.on('disconnect', function(data) {
+		console.log('Client disconnected');
+	})
 });
 console.log('socket.io listening on port ' + IO_PORT);

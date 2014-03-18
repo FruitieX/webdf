@@ -38,6 +38,36 @@ var doMove = function(delta) {
 	yawObject.translateZ( velocity.z );
 
 	onGround = false;
+
+	// check direction of velocity vector (+ epsilon)
+	var oldPos = new THREE.Vector3().copy(yawObject.position);
+	ray = new THREE.Raycaster(yawObject.position, velocity, 0, velocity + new THREE.Vector3().copy(velocity).normalize() * epsilon);
+	var intersections = ray.intersectObjects( [map] );
+	if( intersections.length > 0 ) {
+		//console.log('intersection');
+		for(var j = 0; j < intersections.length; j++) {
+			//console.log(intersections);
+			var distance = intersections[j].distance;
+			var normal = intersections[j].face.normal;
+			//console.log(distance);
+			if ( distance > 0 && distance <= collision_distance) {
+				//console.log('intersection: ' + intersections[0].distance);
+
+				// check how large the angle between intersected face normal
+				// and a flat ground plane normal is, set isOnObject accordingly
+				//console.log(normal.dot(new THREE.Vector3(0, 1, 0)));
+				if(normal.dot(new THREE.Vector3(0, 1, 0)) > 0.8) {
+					onGround = true;
+				}
+
+				//velocity;
+				// push player back from face along its normal
+				velocity.projectOnPlane(normal);
+				//yawObject.position.add(new THREE.Vector3().copy(normal).multiplyScalar((collision_distance - distance)));
+			}
+		}
+	}
+
 	for(var i = 0; i < dirs.length; i++) {
 		ray = new THREE.Raycaster();
 		dirVec = dirs[i];
@@ -67,7 +97,7 @@ var doMove = function(delta) {
 					}
 
 					// push player back from face along its normal
-					yawObject.position.add(new THREE.Vector3().copy(normal).multiplyScalar((collision_distance - distance)));
+					//yawObject.position.add(new THREE.Vector3().copy(normal).multiplyScalar((collision_distance - distance)));
 				}
 			}
 		}

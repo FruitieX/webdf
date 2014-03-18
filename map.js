@@ -18,8 +18,8 @@ var loadMap = function() {
 
 	// load map
 	loader = new THREE.JSONLoader();
-	loader.load( "res/map.js", function(json_geometry) {
-		material = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('res/lightmap.png') });
+	loader.load( "res/map1.js", function(json_geometry) {
+		material = new THREE.MeshNormalMaterial(); //{map: THREE.ImageUtils.loadTexture('res/lightmap.png') });
 		map = new THREE.Mesh( json_geometry, material );
 		map.scale.set( map_scale, map_scale, map_scale );
 		map.position.x = 0;
