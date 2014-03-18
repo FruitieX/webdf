@@ -1,19 +1,14 @@
 socket = io.connect("http://localhost:8081");
 
 socket.on('update', function(data) {
-	if(data.uid in players) {
-		var player = players[data.uid];
+	var player;
+	if(data.uid in players) { // player seen before
+		player = players[data.uid];
+	} else { // player just joined, add as new player
+		player = {};
 
-		// still loading model?
-		if(player.model) {
-			player.model.position.x = data.pos.x;
-			player.model.position.y = data.pos.y - 7;
-			player.model.position.z = data.pos.z;
-
-			player.model.rotation = new THREE.Euler(0, data.rotY, 0, 'XYZ');
-		}
-	} else {
-		var player = {};
+		player.score = 0;
+		player.name = data.uid; // TODO: proper name
 
 		console.log('new player connected with uid ' + data.uid);
 		// insert new model
@@ -22,15 +17,23 @@ socket.on('update', function(data) {
 			player.model = new THREE.Mesh( json_geometry, material );
 			player.model.scale.set( 3, 3, 3 );
 			scene.add(player.model);
+		});
 
+		players[data.uid] = player;
+	}
+
+	if(data.pos) { // position & rotation update
+		// still loading model?
+		if(player.model) {
 			player.model.position.x = data.pos.x;
 			player.model.position.y = data.pos.y - 7;
 			player.model.position.z = data.pos.z;
 
 			player.model.rotation = new THREE.Euler(0, data.rotY, 0, 'XYZ');
-		});
-
-		players[data.uid] = player;
+		}
+	} else if (data.score) { // score update
+		player.score = data.score;
+		redrawScoreboard();
 	}
 });
 

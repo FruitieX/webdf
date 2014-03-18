@@ -11,6 +11,14 @@ html, body {
 	color:white;
 }
 
+#scoreboard {
+	position:absolute;
+	z-index:10;
+	left:20px;
+	top:60px;
+	color:white;
+}
+
 #fps {
 	position:absolute;
 	z-index:10;

@@ -7,9 +7,31 @@ var init = function() {
 	pointerLockSetup();
 }
 
+var redrawScoreboard = function() {
+	$("#scoreboard").empty();
+
+	var players_a = [{name: "You", score: score}];
+	_.each(players, function(player) {
+		players_a.push(player);
+	});
+
+	players_a.sort(function(a, b) {
+		return b.score - a.score;
+	});
+
+	for(var i = 0; i < players_a.length; i++) {
+		$("#scoreboard").append(players_a[i].name + ": " + players_a[i].score + "<br>");
+	}
+}
+
 var updateScore = function(cnt) {
 	score += cnt;
 	$("#score").html("Score: " + score);
+	redrawScoreboard();
+
+	socket.emit("update", {
+		'score': score,
+	});
 }
 
 var respawn = function(reason) {
