@@ -20,6 +20,7 @@ socket.on('update', function(data) {
 		});
 
 		players[data.uid] = player;
+		redrawScoreboard();
 	}
 
 	if(data.pos) { // position & rotation update
@@ -46,4 +47,5 @@ socket.on('p_disconnected', function(data) {
 	console.log('player with uid ' + data + ' disconnected.');
 	scene.remove(players[data].model);
 	delete players[data];
+	redrawScoreboard();
 });
