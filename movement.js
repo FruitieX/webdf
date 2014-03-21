@@ -10,9 +10,13 @@ var doMove = function(delta) {
 	var wishDir = new THREE.Vector3();
 
 	var dirVec = new THREE.Vector3();
-	dirVec = getLookDirection(new THREE.Vector3());
+	var dirEuler = new THREE.Euler(0, yawObject.rotation.y, 0, "XYZ");
+	dirVec = new THREE.Vector3(0, 0, -1).applyEuler(dirEuler);
+
+	// 90 degree rotation
 	var dirVec_rotated = new THREE.Vector3();
-	dirVec_rotated = getLookDirection(new THREE.Vector3()).applyEuler( new THREE.Euler(0, Math.PI/2, 0, "XYZ" ));
+	var dirEuler_rotated = new THREE.Euler(0, yawObject.rotation.y + Math.PI/2, 0, "XYZ");
+	dirVec_rotated = new THREE.Vector3(0, 0, -1).applyEuler(dirEuler_rotated);
 
 	if ( moveForward ) wishDir.add(dirVec.multiplyScalar(modifier * delta));
 	if ( moveBackward ) wishDir.add(dirVec.multiplyScalar(-modifier * delta));
@@ -36,18 +40,18 @@ var doMove = function(delta) {
 		}
 	} else {
 		// gravity
-		velocity.y -= 0.075 * delta;
+		velocity.y -= 0.06 * delta;
 	}
 
 	yawObject.position.add(velocity);
 
 	onGround = false;
 
-	var velocity_collision_distance = (bbox_mins[0].x / bbox_mins[0].y) * collision_distance;
+	//var velocity_collision_distance = (bbox_mins[0].x / bbox_mins[0].y) * collision_distance;
 	// check direction of velocity vector (+ epsilon)
-	var oldPos = new THREE.Vector3().copy(yawObject.position);
-	ray = new THREE.Raycaster(yawObject.position, velocity, 0, new THREE.Vector3().copy(velocity).normalize().multiplyScalar(velocity_collision_distance));
-	var intersections = ray.intersectObjects( [map] );
+	//var oldPos = new THREE.Vector3().copy(yawObject.position);
+	//ray = new THREE.Raycaster(yawObject.position, velocity, 0, new THREE.Vector3().copy(velocity).normalize().multiplyScalar(velocity_collision_distance));
+	//var intersections = ray.intersectObjects( [map] );
 	/*
 	if( intersections.length > 0 ) {
 		//console.log('intersection');
