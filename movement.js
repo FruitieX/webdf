@@ -1,16 +1,26 @@
 var doMove = function(delta) {
 	delta *= 0.05;
 
-	var modifier = 0.10;
-	// limit acceleration a bit at higher speeds
-	if(Math.sqrt(velocity.x * velocity.x + velocity.z * velocity.z) > 1) {
-		modifier = 0.005;
+	var modifier;
+	if (fly)
+		modifier = 1;
+	else {
+		modifier = 0.10;
+		// limit acceleration a bit at higher speeds
+		if(Math.sqrt(velocity.x * velocity.x + velocity.z * velocity.z) > 1) {
+			modifier = 0.005;
+		}
 	}
 
 	var wishDir = new THREE.Vector3();
 
 	var dirVec = new THREE.Vector3();
-	var dirEuler = new THREE.Euler(0, yawObject.rotation.y, 0, "XYZ");
+	var dirEuler;
+	var fly = false;
+	if (fly)
+		dirEuler = new THREE.Euler(pitchObject.rotation.x, yawObject.rotation.y, 0, "YXZ");
+	else
+		dirEuler = new THREE.Euler(0, yawObject.rotation.y, 0, "XYZ");
 	dirVec = new THREE.Vector3(0, 0, -1).applyEuler(dirEuler);
 
 	// 90 degree rotation
@@ -24,7 +34,12 @@ var doMove = function(delta) {
 	if ( moveLeft ) wishDir.add(dirVec_rotated.multiplyScalar(modifier * delta));
 	if ( moveRight ) wishDir.add(dirVec_rotated.multiplyScalar(-modifier * delta));
 
-	if (onGround === true) {
+	if(fly) {
+		// friction
+		velocity.x += ( - velocity.x ) * 0.10 * delta;
+		velocity.y += ( - velocity.y ) * 0.10 * delta;
+		velocity.z += ( - velocity.z ) * 0.10 * delta;
+	} else if (onGround) {
 		// clip y velocity so we don't fall through
 		velocity.y = Math.max( 0, velocity.y );
 
