@@ -27,6 +27,7 @@ var loadMap = function() {
 		texture.repeat.x = 5;
 		texture.repeat.y = 5;
 		material = new THREE.MeshPhongMaterial({map: texture});
+		//material.wireframe = true;
 
 		map = new THREE.Mesh( json_geometry, material );
 		map.scale.set( map_scale, map_scale, map_scale );

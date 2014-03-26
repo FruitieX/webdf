@@ -13,6 +13,7 @@ var ray, dirVec;
 // player bounding box size
 var bbox_mins = [-0.5, -2.0, -0.5];
 var bbox_maxs = [0.5, 0.5, 0.5];
+var cam_offset = 1;
 
 // vectors pointing to all corners of bounding box from origin
 var dirs;

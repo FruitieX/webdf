@@ -53,38 +53,36 @@ var doMove = function(delta) {
 		}
 	} else {
 		// gravity
-		velocity.y -= 0.06 * delta;
+		velocity.y -= 0.075 * delta;
 	}
 
-	// check direction of wishDir vector (+ epsilon)
-	//var wishDir_collision_distance = (bbox_mins[0] / bbox_mins[1]) * collision_distance;
 
-	//ray = new THREE.Raycaster(yawObject.position, wishDir, 0, new THREE.Vector3().copy(wishDir).normalize().multiplyScalar(wishDir_collision_distance + epsilon).length());
-	//var intersections = ray.intersectObjects( [map] );
+	onGround = false;
 
-	/*
+	// get rid of extreme velocity clip bugs by tracing direction of wishDir
+	ray = new THREE.Raycaster(yawObject.position, wishDir, 0, collision_distance + epsilon);
+	var intersections = ray.intersectObjects( [map] );
+	var wishDir_collision_distance = (bbox_mins[0] / bbox_mins[1]) * collision_distance;
+
 	if( intersections.length > 0 ) {
 		for(var j = 0; j < intersections.length; j++) {
 			var distance = intersections[j].distance;
 			var normal = intersections[j].face.normal;
 
-			//if ( distance > 0 && distance <= wishDir_collision_distance + epsilon) {
-				console.log('wishDir project');
+			if ( distance > 0 && distance <= wishDir_collision_distance + epsilon) {
 				wishDir.projectOnPlane(normal);
-			//}
+			}
 		}
 	}
-	*/
-
-	onGround = false;
 
 	velocity.add(wishDir);
 	yawObject.position.add(velocity);
 
+	// now trace against corners of bbox
 	for(var i = 0; i < dirs.length; i++) {
 		dirVec = dirs[i];
-		var tempVec = new THREE.Vector3().copy(dirVec).multiplyScalar(collision_distance + epsilon);
-		ray = new THREE.Raycaster(yawObject.position, tempVec, 0, tempVec.length());
+		var tempVec = new THREE.Vector3().copy(dirVec);
+		ray.set(yawObject.position, tempVec);
 
 		var intersections = ray.intersectObjects( [map] );
 
@@ -96,10 +94,8 @@ var doMove = function(delta) {
 
 				// check how large the angle between intersected face normal
 				// and a flat ground plane normal is, set onGround accordingly
-				if(normal.dot(new THREE.Vector3(0, 1, 0)) > 0.8) {
+				if(normal.dot(new THREE.Vector3(0, 1, 0)) > 0.7) {
 					onGround = true;
-				} else {
-					console.log('collision against non-ground');
 				}
 
 				// push player back from face along its normal

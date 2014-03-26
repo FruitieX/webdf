@@ -20,15 +20,12 @@ var shoot = function (){
 		intersections.sort(function(a, b) {
 			return a.distance - b.distance;
 		});
-		if(intersections[0].object.uuid === map_uuid) {
-			console.log('hit map, distance: ' + intersections[0].distance);
-		} else {
+		if(intersections[0].object.uuid !== map_uuid) {
 			console.log('hit player, distance: ' + intersections[0].distance);
-			//console.log('model uuid: ' + intersections[0].object.uuid);
 			_.each(players, function(player, uid) {
 				// found the player that we hit
 				if (player.model.uuid === intersections[0].object.uuid) {
-					console.log('hit player uid ' + uid);
+					//console.log('hit player uid ' + uid);
 
 					setCenterprint("You fragged " + player.name);
 
