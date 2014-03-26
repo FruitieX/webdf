@@ -118,12 +118,13 @@ var doMove = function(delta) {
 
 		var airaccelerate = 1;
 		var airstopaccelerate = 2.5;
-		var airstrafeaccelerate = 70;
+		//var airstrafeaccelerate = 0.21875; //70;
+		var airstrafeaccelerate = 70; //0.21875; //70;
 		var stopspeed = 0.3125; //100;
 		var aircontrol = 0.46875; //150;
 		var aircontrol_power = 2;
 		var maxairspeed = 1; //320;
-		var maxairstrafespeed = 30;
+		var maxairstrafespeed = 0.09375; //30;
 
 		var speed = velocity.length();
 		var wishspeed = speed;
@@ -159,7 +160,7 @@ var doMove = function(delta) {
 		velocity.z = vel_perpend.z + vel_straight * wishDir.z;
 
 		// CPM aircontrol
-		if(fwdmove == false && sidemove == true) {
+		if(!fwdmove && sidemove) {
 			var zspeed = velocity.y;
 			velocity.y = 0;
 
@@ -188,6 +189,7 @@ var doMove = function(delta) {
 			velocity.multiplyScalar(speed);
 			velocity.y = zspeed;
 		}
+		console.log("velocity: " + velocity.length());
 		velocity.y = vel_y;
 		// gravity
 		velocity.y -= 0.075 * delta;
