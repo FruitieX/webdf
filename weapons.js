@@ -33,7 +33,8 @@ var shoot = function (){
 					setCenterprint("You fragged " + uid);
 
 					socket.emit('hit', {
-						'uid': uid
+						'uid': uid,
+						'name': playername
 					});
 
 					updateScore(1);
