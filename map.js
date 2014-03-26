@@ -1,9 +1,9 @@
 var loadMap = function() {
 	// enable black fog
-	scene.fog = new THREE.Fog( 0x000000, 0, 2000 );
+	scene.fog = new THREE.Fog( 0x000000, 0, 500 );
 
 	// ambient light for really dark spots
-	var light = new THREE.AmbientLight( 0x555555 );
+	var light = new THREE.AmbientLight( 0x222222 );
 	scene.add( light );
 
 	light = new THREE.PointLight( 0xb8e8f8, 0.5, 0 );
@@ -42,9 +42,10 @@ var loadMap = function() {
 		texture.wrapS = THREE.RepeatWrapping;
 		texture.wrapT = THREE.RepeatWrapping;
 		material = new THREE.MeshBasicMaterial({map: texture});
+		material.fog = false;
 
 		sky = new THREE.Mesh( json_geometry, material );
-		var sky_scale = 20;
+		var sky_scale = 5000;
 		sky.scale.set( sky_scale, sky_scale, sky_scale );
 		sky.position.x = 0;
 		sky.position.y = 0;
