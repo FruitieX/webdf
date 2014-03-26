@@ -1,11 +1,14 @@
 var init = function() {
-	globalsInit();
 	playername = prompt("Enter nickname:", "RandomPlayer");
+
+	netInit();
+	globalsInit();
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
 	scene = new THREE.Scene();
 	setupRenderer();
 	loadMap();
 	pointerLockSetup();
+	animate();
 }
 
 var redrawScoreboard = function() {
@@ -32,6 +35,7 @@ var updateScore = function(cnt) {
 
 	socket.emit("update", {
 		'score': score,
+		'name': playername
 	});
 }
 
@@ -68,7 +72,8 @@ function animate() {
 
 	socket.emit("update", {
 		'pos': yawObject.position,
-		'rotY': yawObject.rotation._y
+		'rotY': yawObject.rotation._y,
+		'name': playername
 	});
 
 	renderer.render( scene, camera );
@@ -82,4 +87,3 @@ function animate() {
 }
 
 init();
-animate();
