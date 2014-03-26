@@ -24,8 +24,6 @@ var doMove = function(delta) {
 	if ( moveLeft ) wishDir.add(dirVec_rotated.multiplyScalar(modifier * delta));
 	if ( moveRight ) wishDir.add(dirVec_rotated.multiplyScalar(-modifier * delta));
 
-	velocity.add(wishDir);
-
 	if (onGround === true) {
 		// clip y velocity so we don't fall through
 		velocity.y = Math.max( 0, velocity.y );
@@ -43,75 +41,55 @@ var doMove = function(delta) {
 		velocity.y -= 0.06 * delta;
 	}
 
-	yawObject.position.add(velocity);
+	// check direction of wishDir vector (+ epsilon)
+	//var wishDir_collision_distance = (bbox_mins[0] / bbox_mins[1]) * collision_distance;
+
+	//ray = new THREE.Raycaster(yawObject.position, wishDir, 0, new THREE.Vector3().copy(wishDir).normalize().multiplyScalar(wishDir_collision_distance + epsilon).length());
+	//var intersections = ray.intersectObjects( [map] );
+
+	/*
+	if( intersections.length > 0 ) {
+		for(var j = 0; j < intersections.length; j++) {
+			var distance = intersections[j].distance;
+			var normal = intersections[j].face.normal;
+
+			//if ( distance > 0 && distance <= wishDir_collision_distance + epsilon) {
+				console.log('wishDir project');
+				wishDir.projectOnPlane(normal);
+			//}
+		}
+	}
+	*/
 
 	onGround = false;
 
-	//var velocity_collision_distance = (bbox_mins[0].x / bbox_mins[0].y) * collision_distance;
-	// check direction of velocity vector (+ epsilon)
-	//var oldPos = new THREE.Vector3().copy(yawObject.position);
-	//ray = new THREE.Raycaster(yawObject.position, velocity, 0, new THREE.Vector3().copy(velocity).normalize().multiplyScalar(velocity_collision_distance));
-	//var intersections = ray.intersectObjects( [map] );
-	/*
-	if( intersections.length > 0 ) {
-		//console.log('intersection');
-		for(var j = 0; j < intersections.length; j++) {
-			//console.log(intersections);
-			var distance = intersections[j].distance;
-			var normal = intersections[j].face.normal;
-			//console.log(distance);
-			if ( distance > 0 && distance <= collision_distance + epsilon) {
-				//console.log('intersection: ' + intersections[0].distance);
+	velocity.add(wishDir);
+	yawObject.position.add(velocity);
 
-				// check how large the angle between intersected face normal
-				// and a flat ground plane normal is, set isOnObject accordingly
-				//console.log(normal.dot(new THREE.Vector3(0, 1, 0)));
-				//if(normal.dot(new THREE.Vector3(0, 1, 0)) > 0.8) {
-					//onGround = true;
-				//}
-
-				//velocity;
-				// push player back from face along its normal
-				console.log('velocity project');
-				velocity.projectOnPlane(normal);
-				//yawObject.position.add(new THREE.Vector3().copy(normal).multiplyScalar((collision_distance - distance)));
-			}
-		}
-	}
-
-	*/
 	for(var i = 0; i < dirs.length; i++) {
-		ray = new THREE.Raycaster();
 		dirVec = dirs[i];
-		//ray.ray.direction.set(dirs[i][0], dirs[i][1], dirs[i][2]);
-
-		//ray.ray.origin.copy( controls.getObject().position );
-		//shoot();
-		//}
-		ray.set(yawObject.position, new THREE.Vector3().copy(dirVec).multiplyScalar(collision_distance + epsilon));
+		var tempVec = new THREE.Vector3().copy(dirVec).multiplyScalar(collision_distance + epsilon);
+		ray = new THREE.Raycaster(yawObject.position, tempVec, 0, tempVec.length());
 
 		var intersections = ray.intersectObjects( [map] );
 
 		if ( intersections.length > 0 ) {
 			// loop through every intersection
 			for(var j = 0; j < intersections.length; j++) {
-				//console.log(intersections);
 				var distance = intersections[j].distance;
 				var normal = intersections[j].face.normal;
-				if ( distance > 0 && distance <= collision_distance + epsilon) {
-					//console.log('intersection: ' + intersections[0].distance);
 
-					// check how large the angle between intersected face normal
-					// and a flat ground plane normal is, set onGround accordingly
-					//console.log(normal.dot(new THREE.Vector3(0, 1, 0)));
-					if(normal.dot(new THREE.Vector3(0, 1, 0)) > 0.8) {
-						onGround = true;
-					}
-
-					// push player back from face along its normal
-					yawObject.position.add(new THREE.Vector3().copy(normal).multiplyScalar((collision_distance - distance)));
-					velocity.projectOnPlane(normal);
+				// check how large the angle between intersected face normal
+				// and a flat ground plane normal is, set onGround accordingly
+				if(normal.dot(new THREE.Vector3(0, 1, 0)) > 0.8) {
+					onGround = true;
+				} else {
+					console.log('collision against non-ground');
 				}
+
+				// push player back from face along its normal
+				velocity.projectOnPlane(normal);
+				yawObject.position.add(new THREE.Vector3().copy(normal).normalize().multiplyScalar((collision_distance - distance)));
 			}
 		}
 	}
