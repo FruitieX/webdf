@@ -23,18 +23,17 @@ process.on('uncaughtException', function (err) {
 });
 
 io.sockets.on('connection', function(socket) {
+	console.log('Client connected');
 	socket.on('update', function(data) {
 		data.uid = socket.id;
 		socket.broadcast.emit('update', data);
 	});
 	socket.on('hit', function(data) {
-		io.sockets.socket(data.uid).emit('hit', socket.id);
+		io.sockets.socket(data.uid).emit('hit', data.name);
 	});
 	socket.on('disconnect', function(data) {
 		socket.broadcast.emit('p_disconnected', socket.id);
-	});
-	socket.on('disconnect', function(data) {
 		console.log('Client disconnected');
-	})
+	});
 });
 console.log('socket.io listening on port ' + IO_PORT);
