@@ -20,7 +20,7 @@ var loadMap = function() {
 	var sky;
 	// load map
 	loader = new THREE.JSONLoader();
-	loader.load( "res/map1.js", function(json_geometry) {
+	loader.load( "res/col_test.js", function(json_geometry) {
 		texture = THREE.ImageUtils.loadTexture('res/uv.png');
 		texture.wrapS = THREE.RepeatWrapping;
 		texture.wrapT = THREE.RepeatWrapping;
