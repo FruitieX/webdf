@@ -33,6 +33,7 @@ var socket;
 var uid;
 var map_uuid;
 var players = {}
+var playername;
 
 // game logic
 var score = 0;

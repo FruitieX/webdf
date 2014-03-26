@@ -1,5 +1,6 @@
 var init = function() {
 	globalsInit();
+	playername = prompt("Enter nickname:", "RandomPlayer");
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
 	scene = new THREE.Scene();
 	setupRenderer();
@@ -10,7 +11,7 @@ var init = function() {
 var redrawScoreboard = function() {
 	$("#scoreboard").empty();
 
-	var players_a = [{name: "You", score: score}];
+	var players_a = [{name: playername, score: score}];
 	_.each(players, function(player) {
 		players_a.push(player);
 	});
