@@ -28,11 +28,24 @@ var doMove = function(delta) {
 	var dirEuler_rotated = new THREE.Euler(0, yawObject.rotation.y + Math.PI/2, 0, "XYZ");
 	dirVec_rotated = new THREE.Vector3(0, 0, -1).applyEuler(dirEuler_rotated);
 
-	if ( moveForward ) wishDir.add(dirVec.multiplyScalar(modifier * delta));
-	if ( moveBackward ) wishDir.add(dirVec.multiplyScalar(-modifier * delta));
+	var movementKey = false;
+	if ( moveForward ) {
+		wishDir.add(dirVec.multiplyScalar(modifier * delta));
+		movementKey = true;
+	}
+	if ( moveBackward ) {
+		wishDir.add(dirVec.multiplyScalar(-modifier * delta));
+		movementKey = true;
+	}
 
-	if ( moveLeft ) wishDir.add(dirVec_rotated.multiplyScalar(modifier * delta));
-	if ( moveRight ) wishDir.add(dirVec_rotated.multiplyScalar(-modifier * delta));
+	if ( moveLeft ) {
+		wishDir.add(dirVec_rotated.multiplyScalar(modifier * delta));
+		movementKey = true;
+	}
+	if ( moveRight ) {
+		wishDir.add(dirVec_rotated.multiplyScalar(-modifier * delta));
+		movementKey = true;
+	}
 
 	if(fly) {
 		// friction
@@ -46,8 +59,12 @@ var doMove = function(delta) {
 		if (jump) {
 			velocity.y += 1;
 			onGround = false;
-		} else {
+		} else if (!movementKey) {
 			// friction
+			velocity.x *= (1 - 0.1);
+			velocity.z *= (1 - 0.1);
+		} else {
+			// air friction
 			velocity.x += ( - velocity.x ) * 0.10 * delta;
 			velocity.z += ( - velocity.z ) * 0.10 * delta;
 		}
@@ -81,7 +98,7 @@ var doMove = function(delta) {
 		dirVec = bbox_dirs[i];
 		var tempVec = new THREE.Vector3().copy(dirVec);
 		ray.set(yawObject.position, tempVec);
-		ray.far = bbox_dists[i];
+		ray.far = bbox_dists[i] + epsilon;
 
 		var intersections = ray.intersectObjects( [map] );
 
