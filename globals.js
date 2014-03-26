@@ -42,7 +42,7 @@ var socket;
 var uid;
 var map_uuid;
 var players = {}
-var playername;
+var playername = "Player" + Math.random().toString().substring(2, 4);
 
 // game logic
 var score = 0;

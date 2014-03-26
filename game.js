@@ -1,5 +1,9 @@
 var init = function() {
-	playername = prompt("Enter nickname:", "RandomPlayer");
+	if($.cookie("playername"))
+		playername = $.cookie('playername');
+
+	playername = prompt("Enter nickname:", playername);
+	$.cookie("playername", playername);
 
 	netInit();
 	globalsInit();
