@@ -1,7 +1,7 @@
 // rendering
 var camera, scene, renderer;
 var geometry, material, mesh;
-var prevFrameTime = Date.now();
+var prevFrameTime;
 var map_scale = 10;
 var map;
 

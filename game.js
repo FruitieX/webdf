@@ -65,6 +65,8 @@ function animate() {
 	if (mouseDown)
 		shoot();
 
+	if(!prevFrameTime)
+		prevFrameTime = Date.now();
 	doMove(Date.now() - prevFrameTime);
 	numFrames++;
 	throttledDrawFps();
