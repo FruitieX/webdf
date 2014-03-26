@@ -6,17 +6,25 @@ var map_scale = 10;
 var map;
 
 // collision testing
-var collision_distance = 8;
 var epsilon = 0.1;
 var ray, dirVec;
 
 // player bounding box size
-var bbox_mins = [-0.5, -2.0, -0.5];
-var bbox_maxs = [0.5, 0.5, 0.5];
-var cam_offset = 1;
+var bbox_mins = [-2, -10, -2];
+var bbox_maxs = [2, 2, 2];
 
 // vectors pointing to all corners of bounding box from origin
-var dirs;
+var bbox_dirs;
+var bbox_dists = [
+	Math.sqrt(Math.pow(Math.sqrt(Math.pow(bbox_mins[0], 2) + Math.pow(bbox_mins[1], 2)), 2) + Math.pow(bbox_mins[2], 2)),
+	Math.sqrt(Math.pow(Math.sqrt(Math.pow(bbox_mins[0], 2) + Math.pow(bbox_mins[1], 2)), 2) + Math.pow(bbox_maxs[2], 2)),
+	Math.sqrt(Math.pow(Math.sqrt(Math.pow(bbox_mins[0], 2) + Math.pow(bbox_maxs[1], 2)), 2) + Math.pow(bbox_mins[2], 2)),
+	Math.sqrt(Math.pow(Math.sqrt(Math.pow(bbox_mins[0], 2) + Math.pow(bbox_maxs[1], 2)), 2) + Math.pow(bbox_maxs[2], 2)),
+	Math.sqrt(Math.pow(Math.sqrt(Math.pow(bbox_maxs[0], 2) + Math.pow(bbox_mins[1], 2)), 2) + Math.pow(bbox_mins[2], 2)),
+	Math.sqrt(Math.pow(Math.sqrt(Math.pow(bbox_maxs[0], 2) + Math.pow(bbox_mins[1], 2)), 2) + Math.pow(bbox_maxs[2], 2)),
+	Math.sqrt(Math.pow(Math.sqrt(Math.pow(bbox_maxs[0], 2) + Math.pow(bbox_maxs[1], 2)), 2) + Math.pow(bbox_mins[2], 2)),
+	Math.sqrt(Math.pow(Math.sqrt(Math.pow(bbox_maxs[0], 2) + Math.pow(bbox_maxs[1], 2)), 2) + Math.pow(bbox_maxs[2], 2))
+];
 
 // movement & input
 var pitchObject, yawObject;
@@ -49,7 +57,7 @@ var PI_2 = Math.PI / 2;
 
 // these depend on libraries imported in <head>, will be set when init() is ran
 var globalsInit = function() {
-	dirs = [
+	bbox_dirs = [
 		new THREE.Vector3(bbox_mins[0], bbox_mins[1], bbox_mins[2]).normalize(),
 		new THREE.Vector3(bbox_mins[0], bbox_mins[1], bbox_maxs[2]).normalize(),
 		new THREE.Vector3(bbox_mins[0], bbox_maxs[1], bbox_mins[2]).normalize(),
