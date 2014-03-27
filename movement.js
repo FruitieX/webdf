@@ -120,7 +120,6 @@ var doMove = function(delta) {
 
 		var accelspeed;
 
-		//var wishspeed = wishDir.length(); // TODO: hm?
 		var wishspeed = wishDir.length();
 
 		var f = Math.sqrt(velocity.x * velocity.x + velocity.z * velocity.z);
@@ -147,7 +146,6 @@ var doMove = function(delta) {
 
 		var airaccelerate = 1;
 		var airstopaccelerate = 2.5;
-		//var airstrafeaccelerate = 0.21875; //70;
 		var airstrafeaccelerate = 70; //0.21875; //70;
 		var stopspeed = 0.3125; //100;
 		var aircontrol = 0.46875; //150;
@@ -207,7 +205,6 @@ var doMove = function(delta) {
 				k *= Math.pow(dot, aircontrol_power) * (1/60); // TODO hardcoded frametime
 				speed = Math.max(0, speed);
 				k *= aircontrol;
-				console.log("k = " + k);
 				velocity.x = speed * velocity.x + k * wishDir.x;
 				velocity.y = speed * velocity.y + k * wishDir.y;
 				velocity.z = speed * velocity.z + k * wishDir.z;
