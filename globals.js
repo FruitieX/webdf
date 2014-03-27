@@ -2,7 +2,7 @@
 var camera, scene, renderer;
 var geometry, material, mesh;
 var prevFrameTime;
-var map_scale = 10;
+var map_scale = 15;
 var map;
 
 // collision testing
