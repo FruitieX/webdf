@@ -16,7 +16,7 @@ var netInit = function() {
 			loader.load( "res/player.js", function(json_geometry) {
 				material = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('res/player.png') });
 				player.model = new THREE.Mesh( json_geometry, material );
-				player.model.scale.set( 3, 3, 3 );
+				player.model.scale.set( 4, 4, 4 );
 				scene.add(player.model);
 			});
 
@@ -28,7 +28,7 @@ var netInit = function() {
 			// still loading model?
 			if(player.model) {
 				player.model.position.x = data.pos.x;
-				player.model.position.y = data.pos.y - 7;
+				player.model.position.y = data.pos.y - 10;
 				player.model.position.z = data.pos.z;
 
 				player.model.rotation = new THREE.Euler(0, data.rotY, 0, 'XYZ');
