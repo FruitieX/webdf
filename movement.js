@@ -89,6 +89,11 @@ var doMove = function(delta) {
 
 	wishDir.normalize();
 
+	if(onGround && jump) {
+		velocity.y += 1;
+		onGround = false;
+	}
+
 	if(fly) {
 		// friction
 		velocity.x += ( - velocity.x ) * 0.10 * delta;
@@ -98,10 +103,7 @@ var doMove = function(delta) {
 		// clip y velocity so we don't fall through
 		velocity.y = Math.max( 0, velocity.y );
 
-		if (jump) {
-			velocity.y += 1;
-			onGround = false;
-		} else if (!movementKey) {
+		/*else if (!movementKey) {
 			// friction
 			velocity.x *= (1 - 0.1);
 			velocity.z *= (1 - 0.1);
@@ -110,9 +112,36 @@ var doMove = function(delta) {
 			velocity.x += ( - velocity.x ) * 0.10 * delta;
 			velocity.z += ( - velocity.z ) * 0.10 * delta;
 		}
+		*/
 
-		velocity.add(new THREE.Vector3().copy(wishDir).multiplyScalar(0.15));
-	} else if (movementKey) {
+		var sv_friction = 8;
+		var sv_accelerate = 15;
+		var stopspeed = 0.3125; //100;
+
+		var accelspeed;
+
+		//var wishspeed = wishDir.length(); // TODO: hm?
+		var wishspeed = wishDir.length();
+
+		var f = Math.sqrt(velocity.x * velocity.x + velocity.z * velocity.z);
+		if (f > 0)
+		{
+			var friction = sv_friction;
+			f = 1 - (1/60) * friction * ((f < stopspeed) ? (stopspeed / f) : 1);
+			f = Math.max(f, 0);
+			velocity.multiplyScalar(f);
+		}
+		var addspeed = wishspeed - velocity.dot(wishDir);
+		if (addspeed > 0)
+		{
+			accelspeed = Math.min(sv_accelerate * (1/60) * wishspeed, addspeed);
+			velocity.x = velocity.x + accelspeed * wishDir.x;
+			velocity.y = velocity.y + accelspeed * wishDir.y;
+			velocity.z = velocity.z + accelspeed * wishDir.z;
+		}
+
+		//velocity.add(new THREE.Vector3().copy(wishDir).multiplyScalar(0.15));
+	} else {
 		var vel_y = velocity.y;
 		velocity.y = 0;
 
@@ -127,7 +156,7 @@ var doMove = function(delta) {
 		var maxairstrafespeed = 0.09375; //30;
 
 		var speed = velocity.length();
-		var wishspeed = speed;
+		var wishspeed = wishDir.length();
 		var wishspeed0 = wishspeed;
 
 		var accel = airaccelerate;
@@ -189,16 +218,12 @@ var doMove = function(delta) {
 			velocity.multiplyScalar(speed);
 			velocity.y = zspeed;
 		}
-		console.log("velocity: " + velocity.length());
 		velocity.y = vel_y;
-		// gravity
-		velocity.y -= 0.075 * delta;
-	} else {
 		// gravity
 		velocity.y -= 0.075 * delta;
 	}
 
-	//console.log('velocity: ' + velocity.length());
+	$("#speed").text("Speed: " + new THREE.Vector3(velocity.x, 0, velocity.z).length());
 
 	onGround = false;
 
