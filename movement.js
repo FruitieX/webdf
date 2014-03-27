@@ -34,17 +34,6 @@ var doMove = function(delta) {
 	delta *= 0.05;
 
 	var modifier = 1;
-	/*
-	if (fly)
-		modifier = 1;
-	else {
-		modifier = 0.10;
-		// limit acceleration a bit at higher speeds
-		if(Math.sqrt(velocity.x * velocity.x + velocity.z * velocity.z) > 1) {
-			modifier = 0.005;
-		}
-	}
-	*/
 
 	var wishDir = new THREE.Vector3();
 
@@ -96,23 +85,21 @@ var doMove = function(delta) {
 
 	if(fly) {
 		// friction
-		velocity.x += ( - velocity.x ) * 0.10 * delta;
-		velocity.y += ( - velocity.y ) * 0.10 * delta;
-		velocity.z += ( - velocity.z ) * 0.10 * delta;
+		velocity.x += ( - velocity.x ) * 0.5 * delta;
+		velocity.y += ( - velocity.y ) * 0.5 * delta;
+		velocity.z += ( - velocity.z ) * 0.5 * delta;
+		velocity.add(wishDir);
 	} else if (onGround) {
 		// clip y velocity so we don't fall through
 		velocity.y = Math.max( 0, velocity.y );
 
-		/*else if (!movementKey) {
-			// friction
-			velocity.x *= (1 - 0.1);
-			velocity.z *= (1 - 0.1);
-		} else {
-			// air friction
-			velocity.x += ( - velocity.x ) * 0.10 * delta;
-			velocity.z += ( - velocity.z ) * 0.10 * delta;
-		}
-		*/
+		/* Player movement code ported over from the open source DarkPlaces
+		 * engine, which is based on Quake. DarkPlaces is under the GPLv2
+		 * license: http://icculus.org/twilight/darkplaces/
+		 *
+		 * I ported everything necessary for emulating CPMA physics as closely
+		 * as possible.
+		 */
 
 		var sv_friction = 8;
 		var sv_accelerate = 15;
@@ -238,7 +225,6 @@ var doMove = function(delta) {
 		}
 	}
 
-	//velocity.add(wishDir);
 	yawObject.position.add(velocity);
 
 	// now trace against corners of bbox
