@@ -1,9 +1,7 @@
 var projectilesThink = function() {
 	for(var i = projectiles.length - 1; i >= 0; i--) {
 		var projectile = projectiles[i];
-		console.log(projectile);
-		projectile.three_line.material.opacity = (fadeTime - (Date.now() - projectile.time)) / fadeTime;
-		console.log(projectile.three_line.material.opacity);
+		projectile.three_line.material.opacity = ((fadeTime - (Date.now() - projectile.time)) / fadeTime) * projectileOpacity;
 		if(projectile.three_line.material.opacity <= 0) {
 			scene.remove(projectile.three_line);
 			projectiles.splice(i, 1);
@@ -12,6 +10,7 @@ var projectilesThink = function() {
 };
 
 var line_mat = new THREE.LineBasicMaterial({
+	fog: false,
 	color: 0xff0000,
 	linewidth: 3,
 	transparent: true,
@@ -30,7 +29,6 @@ var addProjectile = function(origin, endpoint) {
 	}
 
 	projectiles.push(line);
-	console.log(projectiles);
 	scene.add(three_line);
 };
 
@@ -41,10 +39,11 @@ var shoot = function (){
 
 	lastShoot = Date.now();
 
-	var dirVector = new THREE.Vector3(1,0,0);
-	dirVector = getLookDirection(dirVector);
+	var dirVec = new THREE.Vector3(1,0,0);
+	dirVec = getLookDirection(dirVec);
+	dirVec.normalize();
 	var ray = new THREE.Raycaster();
-	ray.set( yawObject.position, dirVector);
+	ray.set( yawObject.position, dirVec);
 
 	var intersect_objs = [map];
 	_.each(players, function(player) {
@@ -75,16 +74,35 @@ var shoot = function (){
 				}
 			});
 		}
-
-		var origin = new THREE.Vector3().copy(yawObject.position);
-		origin.y += projectile_y_offset;
-
-		socket.emit('shoot', {
-			'origin': origin,
-			'endpoint': intersections[0].point
-		});
-		addProjectile(origin, intersections[0].point);
 	}
+
+	var endpoint;
+	if(intersections.length) {
+		endpoint = intersections[0].point;
+	} else { // hit skybox probably
+		endpoint = new THREE.Vector3().copy(yawObject.position).add(dirVec.multiplyScalar(INFINITY));
+	}
+	console.log(endpoint);
+
+	// offset projectile origin lower a bit
+	var origin = new THREE.Vector3().copy(yawObject.position);
+	origin.y += projectile_y_offset;
+
+	var dirVec_rotated = new THREE.Vector3();
+	var dirEuler_rotated = new THREE.Euler(0, yawObject.rotation.y + Math.PI/2, 0, "XYZ");
+	dirVec_rotated = new THREE.Vector3(0, 0, -1).applyEuler(dirEuler_rotated).normalize();
+	origin.add(dirVec_rotated.multiplyScalar(projectile_x_offset));
+
+	// offset origin forward
+	dirVec.y = 0;
+	origin.add(dirVec.normalize().multiplyScalar(projectile_z_offset));
+
+	socket.emit('shoot', {
+		'origin': origin,
+		'endpoint': endpoint
+	});
+
+	addProjectile(origin, endpoint);
 };
 
 var crosshairReloadUpdate = function() {
