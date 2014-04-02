@@ -44,6 +44,10 @@ var netInit = function() {
 		setCenterprint("You were fragged by " + data);
 	});
 
+	socket.on('shoot', function(data) {
+		addProjectile(data.origin, data.endpoint);
+	});
+
 	socket.on('p_disconnected', function(data) {
 		console.log('player with uid ' + data + ' disconnected.');
 		scene.remove(players[data].model);

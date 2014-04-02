@@ -75,6 +75,7 @@ function animate() {
 	numFrames++;
 	throttledDrawFps();
 	crosshairReloadUpdate();
+	projectilesThink();
 
 	socket.emit("update", {
 		'pos': yawObject.position,

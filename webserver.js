@@ -28,6 +28,9 @@ io.sockets.on('connection', function(socket) {
 		data.uid = socket.id;
 		socket.broadcast.emit('update', data);
 	});
+	socket.on('shoot', function(data) {
+		socket.broadcast.emit('shoot', data);
+	});
 	socket.on('hit', function(data) {
 		io.sockets.socket(data.uid).emit('hit', data.name);
 	});

@@ -1,3 +1,39 @@
+var projectilesThink = function() {
+	for(var i = projectiles.length - 1; i >= 0; i--) {
+		var projectile = projectiles[i];
+		console.log(projectile);
+		projectile.three_line.material.opacity = (fadeTime - (Date.now() - projectile.time)) / fadeTime;
+		console.log(projectile.three_line.material.opacity);
+		if(projectile.three_line.material.opacity <= 0) {
+			scene.remove(projectile.three_line);
+			projectiles.splice(i, 1);
+		}
+	}
+};
+
+var line_mat = new THREE.LineBasicMaterial({
+	color: 0xff0000,
+	linewidth: 3,
+	transparent: true,
+	opacity: 0.8
+});
+
+var addProjectile = function(origin, endpoint) {
+	var line_geom = new THREE.Geometry();
+	line_geom.vertices.push(origin);
+	line_geom.vertices.push(endpoint);
+
+	var three_line = new THREE.Line(line_geom, line_mat);
+	var line = {
+		'three_line': three_line,
+		'time': Date.now()
+	}
+
+	projectiles.push(line);
+	console.log(projectiles);
+	scene.add(three_line);
+};
+
 var shoot = function (){
 	// still reloading?
 	if(Date.now() - lastShoot < RELOAD_TIME)
@@ -39,6 +75,15 @@ var shoot = function (){
 				}
 			});
 		}
+
+		var origin = new THREE.Vector3().copy(yawObject.position);
+		origin.y += projectile_y_offset;
+
+		socket.emit('shoot', {
+			'origin': origin,
+			'endpoint': intersections[0].point
+		});
+		addProjectile(origin, intersections[0].point);
 	}
 };
 
