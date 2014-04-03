@@ -40,15 +40,19 @@ html, body {
 #crosshair {
 	position:absolute;
 	z-index:10;
-	left:48%;
+	left:49%;
 	top:48%;
+	width:2%;
+	height:4%;
 }
 
 #crosshair_reloading {
 	position:absolute;
 	z-index:15;
-	left:48%;
+	left:49%;
 	top:48%;
+	width:2%;
+	height:4%;
 	opacity:0.0;
 }
 
