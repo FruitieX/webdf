@@ -93,7 +93,14 @@ var shoot = function (){
 	dirVec_rotated = new THREE.Vector3(0, 0, -1).applyEuler(dirEuler_rotated).normalize();
 	origin.add(dirVec_rotated.multiplyScalar(projectile_x_offset));
 
-	// offset origin forward
+	// offset origin forward, make separate copy of origin vector for locally drawn projectile
+	// so that we can rotate it a bit different than the sent projectile
+	var localOrigin = new THREE.Vector3().copy(origin);
+	localOrigin.add(dirVec.normalize().multiplyScalar(projectile_z_offset));
+
+	addProjectile(localOrigin, endpoint);
+
+	// remove y rotation from sent projectile as player model gun does not rotate
 	dirVec.y = 0;
 	origin.add(dirVec.normalize().multiplyScalar(projectile_z_offset));
 
@@ -102,7 +109,6 @@ var shoot = function (){
 		'endpoint': endpoint
 	});
 
-	addProjectile(origin, endpoint);
 };
 
 var crosshairReloadUpdate = function() {
