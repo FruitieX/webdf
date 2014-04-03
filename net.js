@@ -9,7 +9,7 @@ var netInit = function() {
 			player = {};
 
 			player.score = 0;
-			player.name = data.name; // TODO: proper name
+			player.name = data.name;
 
 			console.log('new player connected with uid ' + data.uid);
 			// insert new model
