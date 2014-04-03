@@ -83,6 +83,22 @@ function animate() {
 		'name': playername
 	});
 
+	if(gunmodel) {
+		gunmodel.position.copy(yawObject.position);
+
+		// offset gun model to the side
+		var dirVec_rotated = new THREE.Vector3();
+		var dirEuler_rotated = new THREE.Euler(0, yawObject.rotation.y + Math.PI/2, 0, "XYZ");
+		dirVec_rotated = new THREE.Vector3(0, 0, -1).applyEuler(dirEuler_rotated).normalize();
+		gunmodel.position.add(dirVec_rotated.multiplyScalar(projectile_x_offset));
+
+		var temp_rotation = new THREE.Euler( 0, 0, 0, "YXZ" );
+
+		temp_rotation.set( pitchObject.rotation.x, yawObject.rotation.y, 0 );
+
+		gunmodel.rotation = temp_rotation;
+	}
+
 	renderer.render( scene, camera );
 	prevFrameTime = Date.now();
 

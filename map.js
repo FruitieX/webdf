@@ -54,4 +54,13 @@ var loadMap = function() {
 
 		scene.add(sky);
 	});
+	loader.load( "res/gun.js", function(json_geometry) {
+		material = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('res/player.png') });
+
+		gunmodel = new THREE.Mesh( json_geometry, material );
+		gunmodel.scale.set( 4, 4, 4 );
+
+		scene.add(gunmodel);
+		console.log(gunmodel);
+	});
 };

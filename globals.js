@@ -4,6 +4,7 @@ var geometry, material, mesh;
 var prevFrameTime;
 var map_scale = 15;
 var map;
+var gunmodel;
 
 // collision testing
 var epsilon = 0.1;
