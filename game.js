@@ -37,7 +37,7 @@ var updateScore = function(cnt) {
 	$("#score").html("Score: " + score);
 	redrawScoreboard();
 
-	socket.emit("update", {
+	socket.emit("score", {
 		'score': score,
 		'name': playername
 	});
