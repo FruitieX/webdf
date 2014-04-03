@@ -22,22 +22,28 @@ process.on('uncaughtException', function (err) {
 	console.log("ERROR! Node not exiting.");
 });
 
+//Listen for client emits and broadcast the information to other clients
 io.sockets.on('connection', function(socket) {
 	console.log('Client connected');
+	//player location
 	socket.on('update', function(data) {
 		data.uid = socket.id;
 		socket.broadcast.emit('update', data);
 	});
+	//player score
 	socket.on('score', function(data) {
 		data.uid = socket.id;
 		socket.broadcast.emit('score', data);
 	});
+	//player shoot
 	socket.on('shoot', function(data) {
 		socket.broadcast.emit('shoot', data);
 	});
+	//client determines wether or not a shot was a hit, and emits accordingly
 	socket.on('hit', function(data) {
 		io.sockets.socket(data.uid).emit('hit', data.name);
 	});
+	//client disconnects
 	socket.on('disconnect', function(data) {
 		socket.broadcast.emit('p_disconnected', socket.id);
 		console.log('Client disconnected');
