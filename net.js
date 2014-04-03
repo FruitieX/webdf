@@ -1,29 +1,3 @@
-var findPlayer = function(data) {
-	var player;
-	if(data.uid in players) { // player seen before
-		player = players[data.uid];
-	} else { // player just joined, add as new player
-		player = {};
-
-		player.score = 0;
-		player.name = data.name; // TODO: proper name
-
-		console.log('new player connected with uid ' + data.uid);
-		// insert new model
-		loader.load( "res/player.js", function(json_geometry) {
-			material = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('res/player.png') });
-			player.model = new THREE.Mesh( json_geometry, material );
-			player.model.scale.set( 4, 4, 4 );
-			scene.add(player.model);
-		});
-
-		players[data.uid] = player;
-		redrawScoreboard();
-	}
-
-	return player;
-};
-
 var netInit = function() {
 	socket = io.connect("http://localhost:8081");
 
@@ -62,4 +36,30 @@ var netInit = function() {
 		delete players[data];
 		redrawScoreboard();
 	});
+};
+
+var findPlayer = function(data) {
+	var player;
+	if(data.uid in players) { // player seen before
+		player = players[data.uid];
+	} else { // player just joined, add as new player
+		player = {};
+
+		player.score = 0;
+		player.name = data.name; // TODO: proper name
+
+		console.log('new player connected with uid ' + data.uid);
+		// insert new model
+		loader.load( "res/player.js", function(json_geometry) {
+			material = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('res/player.png') });
+			player.model = new THREE.Mesh( json_geometry, material );
+			player.model.scale.set( 4, 4, 4 );
+			scene.add(player.model);
+		});
+
+		players[data.uid] = player;
+		redrawScoreboard();
+	}
+
+	return player;
 };
