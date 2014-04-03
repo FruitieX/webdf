@@ -9,15 +9,15 @@ var projectilesThink = function() {
 	}
 };
 
-var line_mat = new THREE.LineBasicMaterial({
-	fog: false,
-	color: 0xff0000,
-	linewidth: 3,
-	transparent: true,
-	opacity: 0.8
-});
-
 var addProjectile = function(origin, endpoint) {
+	var line_mat = new THREE.LineBasicMaterial({
+		fog: false,
+		color: 0xff0000,
+		linewidth: 3,
+		transparent: true,
+		opacity: 0.8
+	});
+
 	var line_geom = new THREE.Geometry();
 	line_geom.vertices.push(origin);
 	line_geom.vertices.push(endpoint);
