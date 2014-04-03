@@ -1,3 +1,4 @@
+// Ported from DarkPlaces source (see below multiline comment for more info)
 var GeomLerp = function(a, lerp, b) {
 	if(a == 0) {
 		if(lerp < 1)
@@ -18,6 +19,7 @@ var bound = function(a, b, c) {
 	return Math.max(a, Math.min(b, c));
 }
 
+// Ported from DarkPlaces source (see below multiline comment for more info)
 var IsMoveInDir = function(fwd, side, angle) {
 	if (!fwd && !side)
 		return 0; // don't divide by zero
@@ -93,7 +95,7 @@ var doMove = function(delta) {
 		// clip y velocity so we don't fall through
 		velocity.y = Math.max( 0, velocity.y );
 
-		/* Player movement code ported over from the open source DarkPlaces
+		/* Player ground/air movement code ported over from the open source DarkPlaces
 		 * engine, which is based on Quake. DarkPlaces is under the GPLv2
 		 * license: http://icculus.org/twilight/darkplaces/
 		 *
@@ -250,7 +252,7 @@ var doMove = function(delta) {
 
 				// push player back from face along its normal
 				velocity.projectOnPlane(normal);
-				yawObject.position.add(new THREE.Vector3().copy(normal).normalize().multiplyScalar((bbox_dists[i] - distance)));
+				yawObject.position.add(new THREE.Vector3().copy(normal).normalize().multiplyScalar(bbox_dists[i] - distance));
 			}
 		}
 	}

@@ -28,6 +28,10 @@ io.sockets.on('connection', function(socket) {
 		data.uid = socket.id;
 		socket.broadcast.emit('update', data);
 	});
+	socket.on('score', function(data) {
+		data.uid = socket.id;
+		socket.broadcast.emit('score', data);
+	});
 	socket.on('shoot', function(data) {
 		socket.broadcast.emit('shoot', data);
 	});
