@@ -10,10 +10,10 @@ var projectilesThink = function() {
 	}
 };
 
-var addProjectile = function(origin, endpoint) {
+var addProjectile = function(origin, endpoint, color) {
 	var line_mat = new THREE.LineBasicMaterial({
 		fog: false,
-		color: 0xff0000,
+		color: color,
 		linewidth: 3,
 		transparent: true,
 		opacity: 0.8
@@ -98,7 +98,7 @@ var shoot = function (){
 	var localOrigin = new THREE.Vector3().copy(origin);
 	localOrigin.add(dirVec.normalize().multiplyScalar(projectile_z_offset));
 
-	addProjectile(localOrigin, endpoint);
+	addProjectile(localOrigin, endpoint, colorFromName(playername));
 
 	// remove y rotation from sent projectile as player model gun does not rotate
 	dirVec.y = 0;
@@ -106,7 +106,8 @@ var shoot = function (){
 
 	socket.emit('shoot', {
 		'origin': origin,
-		'endpoint': endpoint
+		'endpoint': endpoint,
+		'playername': playername
 	});
 
 };

@@ -27,7 +27,7 @@ var netInit = function() {
 	});
 
 	socket.on('shoot', function(data) {
-		addProjectile(data.origin, data.endpoint);
+		addProjectile(data.origin, data.endpoint, colorFromName(data.playername));
 	});
 
 	socket.on('p_disconnected', function(data) {
@@ -51,7 +51,7 @@ var findPlayer = function(data) {
 		console.log('new player connected with uid ' + data.uid);
 		// insert new model
 		loader.load( "res/player.js", function(json_geometry) {
-			material = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('res/player.png') });
+			material = new THREE.MeshPhongMaterial( { map: THREE.ImageUtils.loadTexture('res/player.png'), color: colorFromName(player.name), } ),
 			player.model = new THREE.Mesh( json_geometry, material );
 			player.model.scale.set( 4, 4, 4 );
 			scene.add(player.model);

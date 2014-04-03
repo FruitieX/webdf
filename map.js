@@ -38,6 +38,31 @@ var loadMap = function() {
 
 		scene.add(map);
 	});
+/*
+var shader = THREE.ShaderLib[ "cube" ];
+		shader.uniforms[ "tCube" ].value = textureCube;
+
+		var material = new THREE.ShaderMaterial( {
+
+			fragmentShader: shader.fragmentShader,
+			vertexShader: shader.vertexShader,
+			uniforms: shader.uniforms,
+			depthWrite: false,
+			side: THREE.BackSide
+
+		} ),
+
+		mesh = new THREE.Mesh( new THREE.BoxGeometry( 100, 100, 100 ), material );
+		sceneCube.add( mesh );
+
+		var r = "textures/cube/Bridge2/";
+		var urls = [ r + "posx.jpg", r + "negx.jpg",
+					 r + "posy.jpg", r + "negy.jpg",
+					 r + "posz.jpg", r + "negz.jpg" ];
+
+		var textureCube = THREE.ImageUtils.loadTextureCube( urls );
+		textureCube.format = THREE.RGBFormat;
+*/
 	loader.load( "res/skybox.js", function(json_geometry) {
 		texture = THREE.ImageUtils.loadTexture('res/skybox.jpg');
 		texture.wrapS = THREE.RepeatWrapping;
@@ -56,6 +81,8 @@ var loadMap = function() {
 	});
 	loader.load( "res/gun.js", function(json_geometry) {
 		material = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('res/player.png') });
+//		material = new THREE.MeshLambertMaterial( { color: 0xff6600, ambient: 0xff2200, envMap: textureCube, combine: THREE.MixOperation, reflectivity: 0.3 } ),
+		material = new THREE.MeshPhongMaterial( { map: THREE.ImageUtils.loadTexture('res/player.png'), color: colorFromName(playername), ambient: colorFromName(playername), combine: THREE.MixOperation, reflectivity: 0.3 } ),
 
 		gunmodel = new THREE.Mesh( json_geometry, material );
 		gunmodel.scale.set( 4, 4, 4 );
