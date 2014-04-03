@@ -20,7 +20,7 @@ var loadMap = function() {
 	var sky;
 	// load map
 	loader = new THREE.JSONLoader();
-	loader.load( "res/map1.js", function(json_geometry) {
+	loader.load( "res/uvtest.js", function(json_geometry, materials) {
 		texture = THREE.ImageUtils.loadTexture('res/uv.png');
 		texture.wrapS = THREE.RepeatWrapping;
 		texture.wrapT = THREE.RepeatWrapping;
@@ -29,7 +29,8 @@ var loadMap = function() {
 		material = new THREE.MeshPhongMaterial({map: texture});
 		//material.wireframe = true;
 
-		map = new THREE.Mesh( json_geometry, material );
+		console.log(json_geometry);
+		map = new THREE.Mesh( json_geometry, materials );
 		map.scale.set( map_scale, map_scale, map_scale );
 		map.position.x = 0;
 		map.position.y = 0;
