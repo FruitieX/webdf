@@ -9,7 +9,6 @@ var setCenterprint = function(s) {
 Colors = [
 	"00ffff",
 	"f0ffff",
-	"f5f5dc",
 	"0000ff",
 	"a52a2a",
 	"00ffff",
@@ -18,7 +17,6 @@ Colors = [
 	"006400",
 	"bdb76b",
 	"8b008b",
-	"556b2f",
 	"ff8c00",
 	"9932cc",
 	"8b0000",
@@ -27,7 +25,6 @@ Colors = [
 	"ff00ff",
 	"ffd700",
 	"008000",
-	"4b0082",
 	"f0e68c",
 	"add8e6",
 	"e0ffff",
@@ -48,6 +45,21 @@ Colors = [
 	"ffffff",
 	"ffff00"
 ];
+
+var darkenColor = function(color) {
+	var r = parseInt(color.substr(0, 2), 16);
+	var g = parseInt(color.substr(2, 2), 16);
+	var b = parseInt(color.substr(4, 2), 16);
+
+	r = Math.floor(r/4);
+	g = Math.floor(r/4);
+	b = Math.floor(r/4);
+
+	// pad with zeros
+	color = ("00" + r.toString(16)).substr(-2) + ("00" + g.toString(16)).substr(-2) + ("00" + b.toString(16)).substr(-2);
+
+	return parseInt(color, 16);
+};
 
 var colorFromName = function(name) {
 	return parseInt(Colors[(parseInt(name, 32) % Colors.length)], 16);

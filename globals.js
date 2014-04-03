@@ -5,6 +5,7 @@ var prevFrameTime;
 var map_scale = 15;
 var map;
 var gunmodel;
+var textureCube;
 
 // collision testing
 var epsilon = 0.1;

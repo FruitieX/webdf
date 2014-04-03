@@ -51,7 +51,7 @@ var findPlayer = function(data) {
 		console.log('new player connected with uid ' + data.uid);
 		// insert new model
 		loader.load( "res/player.js", function(json_geometry) {
-			material = new THREE.MeshPhongMaterial( { map: THREE.ImageUtils.loadTexture('res/player.png'), color: colorFromName(player.name), } ),
+			material = new THREE.MeshPhongMaterial( { map: THREE.ImageUtils.loadTexture('res/player.png'), envMap: textureCube, ambient: colorFromName(player.name), color: colorFromName(player.name), reflectivity: 0.1, /*emissive: darkenColor(colorFromName(player.name).toString(16)),*/ shininess: 50} ),
 			player.model = new THREE.Mesh( json_geometry, material );
 			player.model.scale.set( 4, 4, 4 );
 			scene.add(player.model);

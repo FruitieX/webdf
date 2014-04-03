@@ -38,51 +38,32 @@ var loadMap = function() {
 
 		scene.add(map);
 	});
-/*
-var shader = THREE.ShaderLib[ "cube" ];
-		shader.uniforms[ "tCube" ].value = textureCube;
 
-		var material = new THREE.ShaderMaterial( {
+	var r = "res/skybox/";
+	var urls = [ r + "distant_sunset_ft.jpg", r + "distant_sunset_bk.jpg",
+				r + "distant_sunset_up.jpg", r + "distant_sunset_dn.jpg",
+				r + "distant_sunset_rt.jpg", r + "distant_sunset_lf.jpg"];
 
-			fragmentShader: shader.fragmentShader,
-			vertexShader: shader.vertexShader,
-			uniforms: shader.uniforms,
-			depthWrite: false,
-			side: THREE.BackSide
+	textureCube = THREE.ImageUtils.loadTextureCube( urls );
+	//textureCube.format = THREE.RGBFormat;
 
-		} ),
+	var shader = THREE.ShaderLib[ "cube" ];
+	shader.uniforms[ "tCube" ].value = textureCube;
 
-		mesh = new THREE.Mesh( new THREE.BoxGeometry( 100, 100, 100 ), material );
-		sceneCube.add( mesh );
+	material = new THREE.ShaderMaterial( {
+		fragmentShader: shader.fragmentShader,
+		vertexShader: shader.vertexShader,
+		uniforms: shader.uniforms,
+		depthWrite: false,
+		side: THREE.BackSide,
+		fog: false
+	} );
 
-		var r = "textures/cube/Bridge2/";
-		var urls = [ r + "posx.jpg", r + "negx.jpg",
-					 r + "posy.jpg", r + "negy.jpg",
-					 r + "posz.jpg", r + "negz.jpg" ];
+	var mesh = new THREE.Mesh( new THREE.BoxGeometry( 10000, 10000, 10000 ), material );
+	scene.add( mesh );
 
-		var textureCube = THREE.ImageUtils.loadTextureCube( urls );
-		textureCube.format = THREE.RGBFormat;
-*/
-	loader.load( "res/skybox.js", function(json_geometry) {
-		texture = THREE.ImageUtils.loadTexture('res/skybox.jpg');
-		texture.wrapS = THREE.RepeatWrapping;
-		texture.wrapT = THREE.RepeatWrapping;
-		material = new THREE.MeshBasicMaterial({map: texture});
-		material.fog = false;
-
-		sky = new THREE.Mesh( json_geometry, material );
-		var sky_scale = 5000;
-		sky.scale.set( sky_scale, sky_scale, sky_scale );
-		sky.position.x = 0;
-		sky.position.y = 0;
-		sky.position.z = 0;
-
-		scene.add(sky);
-	});
 	loader.load( "res/gun.js", function(json_geometry) {
-		material = new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture('res/player.png') });
-//		material = new THREE.MeshLambertMaterial( { color: 0xff6600, ambient: 0xff2200, envMap: textureCube, combine: THREE.MixOperation, reflectivity: 0.3 } ),
-		material = new THREE.MeshPhongMaterial( { map: THREE.ImageUtils.loadTexture('res/player.png'), color: colorFromName(playername), ambient: colorFromName(playername), combine: THREE.MixOperation, reflectivity: 0.3 } ),
+		material = new THREE.MeshPhongMaterial( { map: THREE.ImageUtils.loadTexture('res/player.png'), envMap: textureCube, color: colorFromName(playername), ambient: colorFromName(playername), combine: THREE.MixOperation, reflectivity: 0.1 } ),
 
 		gunmodel = new THREE.Mesh( json_geometry, material );
 		gunmodel.scale.set( 4, 4, 4 );
