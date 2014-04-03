@@ -82,7 +82,6 @@ var shoot = function (){
 	} else { // hit skybox probably
 		endpoint = new THREE.Vector3().copy(yawObject.position).add(dirVec.multiplyScalar(INFINITY));
 	}
-	console.log(endpoint);
 
 	// offset projectile origin lower a bit
 	var origin = new THREE.Vector3().copy(yawObject.position);
