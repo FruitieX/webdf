@@ -1,3 +1,4 @@
+//Projectile logic such as fade-out effects
 var projectilesThink = function() {
 	for(var i = projectiles.length - 1; i >= 0; i--) {
 		var projectile = projectiles[i];
