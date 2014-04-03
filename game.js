@@ -28,7 +28,7 @@ var redrawScoreboard = function() {
 	});
 
 	for(var i = 0; i < players_a.length; i++) {
-		$("#scoreboard").append(players_a[i].name + ": " + players_a[i].score + "<br>");
+		$("#scoreboard").append("<span style=\"color:#" + colorFromName(players_a[i].name).toString(16) + "\">" + players_a[i].name + ": " + players_a[i].score + "</span><br>");
 	}
 }
 
