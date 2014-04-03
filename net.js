@@ -27,7 +27,7 @@ var netInit = function() {
 	});
 
 	socket.on('shoot', function(data) {
-		addProjectile(data.origin, data.endpoint, colorFromName(data.playername));
+		addProjectile(data.origin, data.endpoint, darkenColor(colorFromName(playername), 8));
 	});
 
 	socket.on('p_disconnected', function(data) {

@@ -12,7 +12,7 @@ Colors = [
 	"0000ff",
 	"a52a2a",
 	"00ffff",
-	"00008b",
+	"5500ff",
 	"008b8b",
 	"006400",
 	"bdb76b",
@@ -46,14 +46,16 @@ Colors = [
 	"ffff00"
 ];
 
-var darkenColor = function(color) {
+var darkenColor = function(color, multiplier) {
+	color = ("000000" + parseInt(color).toString(16)).substr(-6);
+	console.log(color);
 	var r = parseInt(color.substr(0, 2), 16);
 	var g = parseInt(color.substr(2, 2), 16);
 	var b = parseInt(color.substr(4, 2), 16);
 
-	r = Math.floor(r/4);
-	g = Math.floor(r/4);
-	b = Math.floor(r/4);
+	r = Math.min(Math.floor(r * multiplier), 255);
+	g = Math.min(Math.floor(g * multiplier), 255);
+	b = Math.min(Math.floor(b * multiplier), 255);
 
 	// pad with zeros
 	color = ("00" + r.toString(16)).substr(-2) + ("00" + g.toString(16)).substr(-2) + ("00" + b.toString(16)).substr(-2);
@@ -62,6 +64,6 @@ var darkenColor = function(color) {
 };
 
 var colorFromName = function(name) {
-	return parseInt(Colors[(parseInt(name, 32) % Colors.length)], 16);
+	return parseInt(Colors[(parseInt(name, 33) % Colors.length)], 16);
 };
 
