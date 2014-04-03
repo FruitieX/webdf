@@ -46,11 +46,20 @@ var playername = "Player" + Math.random().toString().substring(2, 4);
 
 // game logic
 var score = 0;
-var RELOAD_TIME = 1000;
-var lastShoot;
 var numFrames = 0; // for fps counter
 var lastFpsTime = Date.now();
 var centerprintTimeout;
+
+// weapon
+var RELOAD_TIME = 1000;
+var lastShoot;
+var projectiles = [];
+var fadeTime = 1000;
+var projectile_y_offset = -2;
+var projectile_x_offset = -2;
+var projectile_z_offset = 8;
+var INFINITY = 99999999;
+var projectileOpacity = 0.75;
 
 // misc constants
 var PI_2 = Math.PI / 2;

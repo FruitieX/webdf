@@ -37,7 +37,7 @@ var updateScore = function(cnt) {
 	$("#score").html("Score: " + score);
 	redrawScoreboard();
 
-	socket.emit("update", {
+	socket.emit("score", {
 		'score': score,
 		'name': playername
 	});
@@ -75,6 +75,7 @@ function animate() {
 	numFrames++;
 	throttledDrawFps();
 	crosshairReloadUpdate();
+	projectilesThink();
 
 	socket.emit("update", {
 		'pos': yawObject.position,
