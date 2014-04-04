@@ -46,6 +46,7 @@ Colors = [
 	"ffff00"
 ];
 
+// brighten or darken a color
 var modifyColor = function(color, multiplier) {
 	var r = parseInt(color.substr(0, 2), 16);
 	var g = parseInt(color.substr(2, 2), 16);
