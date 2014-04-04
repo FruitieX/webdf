@@ -206,7 +206,7 @@ var doMove = function(delta) {
 		}
 		velocity.y = vel_y;
 		// gravity
-		velocity.y -= 3.75 * delta;
+		velocity.y -= 4 * delta;
 	}
 
 	$("#speed").text("Speed: " + new THREE.Vector3(velocity.x, 0, velocity.z).length());
