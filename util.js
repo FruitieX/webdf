@@ -46,19 +46,24 @@ Colors = [
 	"ffff00"
 ];
 
-var darkenColor = function(color, multiplier) {
+var modifyColor = function(color, multiplier) {
 	color = ("000000" + parseInt(color).toString(16)).substr(-6);
 	console.log(color);
 	var r = parseInt(color.substr(0, 2), 16);
 	var g = parseInt(color.substr(2, 2), 16);
 	var b = parseInt(color.substr(4, 2), 16);
 
-	r = Math.min(Math.floor(r * multiplier), 255);
-	g = Math.min(Math.floor(g * multiplier), 255);
-	b = Math.min(Math.floor(b * multiplier), 255);
+	r += (255 - r) * multiplier * (r / 255);
+	g += (255 - g) * multiplier * (g / 255);
+	b += (255 - b) * multiplier * (b / 255);
+
+	r = Math.floor(r);
+	g = Math.floor(g);
+	b = Math.floor(b);
 
 	// pad with zeros
 	color = ("00" + r.toString(16)).substr(-2) + ("00" + g.toString(16)).substr(-2) + ("00" + b.toString(16)).substr(-2);
+	console.log(color);
 
 	return parseInt(color, 16);
 };
