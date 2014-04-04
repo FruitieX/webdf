@@ -11,6 +11,24 @@ var init = function() {
 	scene = new THREE.Scene();
 	setupRenderer();
 	loadMap();
+
+	createjs.Sound.initializeDefaultPlugins();
+	createjs.Sound.registerSound("res/shoot.ogg", "shoot");
+	createjs.Sound.registerSound("res/hit.ogg", "hit");
+	createjs.Sound.registerSound("res/hitsound.wav", "hitsound");
+	createjs.Sound.registerSound("res/death1.ogg", "death1");
+	createjs.Sound.registerSound("res/death2.ogg", "death2");
+	createjs.Sound.registerSound("res/death3.ogg", "death3");
+
+	createjs.Sound.registerSound("res/footstep01.wav", "footstep1");
+	createjs.Sound.registerSound("res/footstep02.wav", "footstep2");
+	createjs.Sound.registerSound("res/footstep03.wav", "footstep3");
+	createjs.Sound.registerSound("res/footstep04.wav", "footstep4");
+	createjs.Sound.registerSound("res/footstep05.wav", "footstep5");
+	createjs.Sound.registerSound("res/footstep06.wav", "footstep6");
+
+	createjs.Sound.registerSound("res/jump.ogg", "jump");
+
 	pointerLockSetup();
 	animate();
 }
@@ -46,6 +64,13 @@ var updateScore = function(cnt) {
 
 var respawn = function(reason) {
 	console.log(reason);
+	var file = "death" + Math.floor(Math.random()*3 + 1).toString();
+	createjs.Sound.play(file);
+
+	socket.emit("sound", {
+		'sound': file,
+		'origin': yawObject.position
+	});
 
 	// neat hardcoded spawnpoint for now :)
 	yawObject.position.x = 0;
@@ -73,6 +98,7 @@ function animate() {
 	if(!prevFrameTime)
 		prevFrameTime = Date.now();
 	doMove(Date.now() - prevFrameTime);
+	prevFrameTime = Date.now();
 	numFrames++;
 	throttledDrawFps();
 	crosshairReloadUpdate();
@@ -101,7 +127,6 @@ function animate() {
 	}
 
 	renderer.render( scene, camera );
-	prevFrameTime = Date.now();
 
 	// we're falling and fast... probably fell out of map!
 	if(velocity.y < -10) {

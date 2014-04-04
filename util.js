@@ -70,3 +70,8 @@ var colorFromName = function(name) {
 	return ("000000" + parseInt(Colors[(parseInt(name, 33) % Colors.length)], 16)).substr(-6);
 };
 
+var playSoundWithAttenuation = function(sound, origin) {
+	var instance = createjs.Sound.play(sound);
+	var origin_vec = new THREE.Vector3(origin.x, origin.y, origin.z);
+	instance.volume = Math.max(0, (SOUND_ATTENUATION_DIST - origin_vec.distanceTo(yawObject.position)) / SOUND_ATTENUATION_DIST);
+};

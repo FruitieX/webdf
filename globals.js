@@ -62,6 +62,7 @@ var projectile_x_offset = -2;
 var projectile_z_offset = 8;
 var INFINITY = 99999999;
 var projectileOpacity = 0.75;
+var SOUND_ATTENUATION_DIST = 300;
 
 // misc constants
 var PI_2 = Math.PI / 2;

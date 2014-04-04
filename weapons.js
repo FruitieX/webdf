@@ -70,6 +70,7 @@ var shoot = function (){
 						'uid': uid,
 						'name': playername
 					});
+					createjs.Sound.play("hitsound");
 
 					updateScore(1);
 					return;
@@ -100,6 +101,8 @@ var shoot = function (){
 	localOrigin.add(dirVec.normalize().multiplyScalar(projectile_z_offset));
 
 	addProjectile(localOrigin, endpoint, modifyColor(colorFromName(playername), 0.5));
+	createjs.Sound.play("shoot");
+	playSoundWithAttenuation("hit", endpoint);
 
 	// remove y rotation from sent projectile as player model gun does not rotate
 	dirVec.y = 0;

@@ -28,6 +28,12 @@ var netInit = function() {
 
 	socket.on('shoot', function(data) {
 		addProjectile(data.origin, data.endpoint, modifyColor(colorFromName(data.playername), 0.5));
+		playSoundWithAttenuation("shoot", data.origin);
+		playSoundWithAttenuation("hit", data.endpoint);
+	});
+
+	socket.on('sound', function(data) {
+		playSoundWithAttenuation(data.sound, data.origin);
 	});
 
 	socket.on('p_disconnected', function(data) {

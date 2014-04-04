@@ -43,6 +43,10 @@ io.sockets.on('connection', function(socket) {
 	socket.on('hit', function(data) {
 		io.sockets.socket(data.uid).emit('hit', data.name);
 	});
+	// sound emitted at position origin
+	socket.on('sound', function(data) {
+		socket.broadcast.emit('sound', data);
+	});
 	//client disconnects
 	socket.on('disconnect', function(data) {
 		socket.broadcast.emit('p_disconnected', socket.id);

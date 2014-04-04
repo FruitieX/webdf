@@ -33,9 +33,9 @@ var IsMoveInDir = function(fwd, side, angle) {
 }
 
 var doMove = function(delta) {
-	//delta /= 1000; // convert to seconds
-	delta = 1/60;
-	//delta = Math.min(0.1, delta); // keep it to sane values
+	delta /= 1000; // convert to seconds
+	//delta = 1/60;
+	delta = Math.min(0.1, delta); // keep it to sane values
 	//console.log(delta);
 
 	var modifier = 1;
@@ -86,6 +86,13 @@ var doMove = function(delta) {
 	if(onGround && jump) {
 		velocity.y += 1;
 		onGround = false;
+		createjs.Sound.play("jump");
+		socket.emit("sound", {
+			'sound': "jump",
+			'origin': yawObject.position
+		});
+	} else if (onGround && movementKey) {
+		throttledFootstep();
 	}
 
 	if(fly) {
@@ -118,14 +125,14 @@ var doMove = function(delta) {
 		if (f > 0)
 		{
 			var friction = sv_friction;
-			f = 1 - (delta) * friction * ((f < stopspeed) ? (stopspeed / f) : 1);
+			f = 1 - ((1/60)) * friction * ((f < stopspeed) ? (stopspeed / f) : 1);
 			f = Math.max(f, 0);
 			velocity.multiplyScalar(f);
 		}
 		var addspeed = wishspeed - velocity.dot(wishDir);
 		if (addspeed > 0)
 		{
-			accelspeed = Math.min(sv_accelerate * (delta) * wishspeed, addspeed);
+			accelspeed = Math.min(sv_accelerate * ((1/60)) * wishspeed, addspeed);
 			velocity.x = velocity.x + accelspeed * wishDir.x;
 			velocity.y = velocity.y + accelspeed * wishDir.y;
 			velocity.z = velocity.z + accelspeed * wishDir.z;
@@ -167,13 +174,13 @@ var doMove = function(delta) {
 		vel_perpend.y = vel_xy.y - vel_straight * wishDir.y;
 		vel_perpend.z = vel_xy.z - vel_straight * wishDir.z;
 
-		var step = accel * (delta) * wishspeed0;
+		var step = accel * ((1/60)) * wishspeed0;
 
 		var vel_xy_current = vel_xy.length();
 
 		vel_straight += bound(0, wishspeed - vel_straight, step);
 
-		//vel_perpend.multiplyScalar(Math.max(0, 1 - (delta) * wishspeed * 
+		//vel_perpend.multiplyScalar(Math.max(0, 1 - ((1/60)) * wishspeed * 
 		velocity.x = vel_perpend.x + vel_straight * wishDir.x;
 		velocity.y = vel_perpend.y + vel_straight * wishDir.y;
 		velocity.z = vel_perpend.z + vel_straight * wishDir.z;
@@ -194,7 +201,7 @@ var doMove = function(delta) {
 			var dot = velocity.dot(wishDir);
 
 			if(dot > 0) {
-				k *= Math.pow(dot, aircontrol_power) * (delta);
+				k *= Math.pow(dot, aircontrol_power) * ((1/60));
 				speed = Math.max(0, speed);
 				k *= aircontrol;
 				velocity.x = speed * velocity.x + k * wishDir.x;
@@ -209,11 +216,12 @@ var doMove = function(delta) {
 		}
 		velocity.y = vel_y;
 		// gravity
-		velocity.y -= 3 * delta;
+		velocity.y -= 3 * (1/60);
 	}
 
 	$("#speed").text("Speed: " + new THREE.Vector3(velocity.x, 0, velocity.z).length());
 
+	var onGround_old = onGround;
 	onGround = false;
 
 	// get rid of extreme velocity clip bugs by tracing direction of wishDir
@@ -229,7 +237,7 @@ var doMove = function(delta) {
 		}
 	}
 
-	yawObject.position.add(new THREE.Vector3().copy(velocity).multiplyScalar(delta / (1/60)));
+	yawObject.position.add(new THREE.Vector3().copy(velocity).multiplyScalar((delta) / (1/60)));
 
 	// now trace against corners of bbox
 	for(var i = 0; i < bbox_dirs.length; i++) {
@@ -250,6 +258,9 @@ var doMove = function(delta) {
 				// and a flat ground plane normal is, set onGround accordingly
 				if(normal.dot(new THREE.Vector3(0, 1, 0)) > 0.7) {
 					onGround = true;
+					if(!onGround_old) {
+						throttledFootstep();
+					}
 				}
 
 				// push player back from face along its normal
@@ -258,4 +269,16 @@ var doMove = function(delta) {
 			}
 		}
 	}
-}
+};
+
+var footstep = function() {
+	var file = "footstep" + Math.floor(Math.random()*6 + 1).toString();
+	createjs.Sound.play(file);
+
+	socket.emit("sound", {
+		'sound': file,
+		'origin': yawObject.position
+	});
+};
+
+var throttledFootstep = _.throttle(footstep, 400, {trailing: false});
