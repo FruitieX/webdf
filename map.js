@@ -6,13 +6,13 @@ var loadMap = function() {
 	var light = new THREE.AmbientLight( 0x222222 );
 	scene.add( light );
 
-	light = new THREE.PointLight( 0xb8e8f8, 0.5, 0 );
+	light = new THREE.PointLight( 0xd18518, 0.5, 0 );
 	light.position.set( 10000, 10000, 10000 );
 	scene.add( light );
-	light = new THREE.PointLight( 0xb8e8f8, 0.5, 0 );
+	light = new THREE.PointLight( 0xd18518, 0.5, 0 );
 	light.position.set( -10000, 10000, -10000 );
 	scene.add( light );
-	light = new THREE.PointLight( 0xb8e8f8, 0.5, 0 );
+	light = new THREE.PointLight( 0xd18518, 0.5, 0 );
 	light.position.set( 0, -10000, 0 );
 	scene.add( light );
 
@@ -63,12 +63,15 @@ var loadMap = function() {
 	scene.add( mesh );
 
 	loader.load( "res/gun.js", function(json_geometry) {
-		material = new THREE.MeshPhongMaterial( { map: THREE.ImageUtils.loadTexture('res/player.png'), envMap: textureCube, color: colorFromName(playername), ambient: colorFromName(playername), combine: THREE.MixOperation, reflectivity: 0.1 } ),
+		material = new THREE.MeshPhongMaterial( { map: THREE.ImageUtils.loadTexture('res/player.png'), envMap: textureCube, color: parseInt(colorFromName(playername), 16), ambient: parseInt(colorFromName(playername), 16), combine: THREE.MixOperation, reflectivity: 0.1 } ),
 
 		gunmodel = new THREE.Mesh( json_geometry, material );
 		gunmodel.scale.set( 4, 4, 4 );
 
 		scene.add(gunmodel);
-		console.log(gunmodel);
 	});
+
+	spotLight = new THREE.SpotLight( 0xaaaaaa );
+	spotLight.position.set( 1000, 500, 1000 );
+	scene.add( spotLight );
 };

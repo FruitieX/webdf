@@ -28,7 +28,8 @@ var redrawScoreboard = function() {
 	});
 
 	for(var i = 0; i < players_a.length; i++) {
-		$("#scoreboard").append("<span style=\"color:#" + colorFromName(players_a[i].name).toString(16) + "\">" + players_a[i].name + ": " + players_a[i].score + "</span><br>");
+		var color = modifyColor(colorFromName(players_a[i].name), 0.5);
+		$("#scoreboard").append("<span style=\"color:#" + color + "\">" + players_a[i].name + ": " + players_a[i].score + "</span><br>");
 	}
 }
 

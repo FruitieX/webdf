@@ -11,6 +11,7 @@ var projectilesThink = function() {
 };
 
 var addProjectile = function(origin, endpoint, color) {
+	color = parseInt(color, 16);
 	var line_mat = new THREE.LineBasicMaterial({
 		fog: false,
 		color: color,
@@ -98,7 +99,7 @@ var shoot = function (){
 	var localOrigin = new THREE.Vector3().copy(origin);
 	localOrigin.add(dirVec.normalize().multiplyScalar(projectile_z_offset));
 
-	addProjectile(localOrigin, endpoint, darkenColor(colorFromName(playername), 8));
+	addProjectile(localOrigin, endpoint, modifyColor(colorFromName(playername), 0.5));
 
 	// remove y rotation from sent projectile as player model gun does not rotate
 	dirVec.y = 0;

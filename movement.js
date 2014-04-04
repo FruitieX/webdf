@@ -33,7 +33,10 @@ var IsMoveInDir = function(fwd, side, angle) {
 }
 
 var doMove = function(delta) {
-	delta *= 0.05;
+	//delta /= 1000; // convert to seconds
+	delta = 1/60;
+	//delta = Math.min(0.1, delta); // keep it to sane values
+	//console.log(delta);
 
 	var modifier = 1;
 
@@ -87,9 +90,9 @@ var doMove = function(delta) {
 
 	if(fly) {
 		// friction
-		velocity.x += ( - velocity.x ) * 0.5 * delta;
-		velocity.y += ( - velocity.y ) * 0.5 * delta;
-		velocity.z += ( - velocity.z ) * 0.5 * delta;
+		velocity.x += ( - velocity.x ) * 10 * delta;
+		velocity.y += ( - velocity.y ) * 10 * delta;
+		velocity.z += ( - velocity.z ) * 10 * delta;
 		velocity.add(wishDir);
 	} else if (onGround) {
 		// clip y velocity so we don't fall through
@@ -115,14 +118,14 @@ var doMove = function(delta) {
 		if (f > 0)
 		{
 			var friction = sv_friction;
-			f = 1 - (1/60) * friction * ((f < stopspeed) ? (stopspeed / f) : 1);
+			f = 1 - (delta) * friction * ((f < stopspeed) ? (stopspeed / f) : 1);
 			f = Math.max(f, 0);
 			velocity.multiplyScalar(f);
 		}
 		var addspeed = wishspeed - velocity.dot(wishDir);
 		if (addspeed > 0)
 		{
-			accelspeed = Math.min(sv_accelerate * (1/60) * wishspeed, addspeed);
+			accelspeed = Math.min(sv_accelerate * (delta) * wishspeed, addspeed);
 			velocity.x = velocity.x + accelspeed * wishDir.x;
 			velocity.y = velocity.y + accelspeed * wishDir.y;
 			velocity.z = velocity.z + accelspeed * wishDir.z;
@@ -164,13 +167,13 @@ var doMove = function(delta) {
 		vel_perpend.y = vel_xy.y - vel_straight * wishDir.y;
 		vel_perpend.z = vel_xy.z - vel_straight * wishDir.z;
 
-		var step = accel * (1/60) * wishspeed0;
+		var step = accel * (delta) * wishspeed0;
 
 		var vel_xy_current = vel_xy.length();
 
 		vel_straight += bound(0, wishspeed - vel_straight, step);
 
-		//vel_perpend.multiplyScalar(Math.max(0, 1 - (1/60) * wishspeed * 
+		//vel_perpend.multiplyScalar(Math.max(0, 1 - (delta) * wishspeed * 
 		velocity.x = vel_perpend.x + vel_straight * wishDir.x;
 		velocity.y = vel_perpend.y + vel_straight * wishDir.y;
 		velocity.z = vel_perpend.z + vel_straight * wishDir.z;
@@ -191,7 +194,7 @@ var doMove = function(delta) {
 			var dot = velocity.dot(wishDir);
 
 			if(dot > 0) {
-				k *= Math.pow(dot, aircontrol_power) * (1/60); // TODO hardcoded frametime
+				k *= Math.pow(dot, aircontrol_power) * (delta);
 				speed = Math.max(0, speed);
 				k *= aircontrol;
 				velocity.x = speed * velocity.x + k * wishDir.x;
@@ -206,7 +209,7 @@ var doMove = function(delta) {
 		}
 		velocity.y = vel_y;
 		// gravity
-		velocity.y -= 0.075 * delta;
+		velocity.y -= 3 * delta;
 	}
 
 	$("#speed").text("Speed: " + new THREE.Vector3(velocity.x, 0, velocity.z).length());
@@ -222,12 +225,11 @@ var doMove = function(delta) {
 			var distance = intersections[j].distance;
 			var normal = intersections[j].face.normal;
 
-			console.log("wishdir project");
 			wishDir.projectOnPlane(normal);
 		}
 	}
 
-	yawObject.position.add(velocity);
+	yawObject.position.add(new THREE.Vector3().copy(velocity).multiplyScalar(delta / (1/60)));
 
 	// now trace against corners of bbox
 	for(var i = 0; i < bbox_dirs.length; i++) {
