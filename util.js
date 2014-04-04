@@ -47,8 +47,6 @@ Colors = [
 ];
 
 var modifyColor = function(color, multiplier) {
-	color = ("000000" + parseInt(color).toString(16)).substr(-6);
-	console.log(color);
 	var r = parseInt(color.substr(0, 2), 16);
 	var g = parseInt(color.substr(2, 2), 16);
 	var b = parseInt(color.substr(4, 2), 16);
@@ -63,12 +61,11 @@ var modifyColor = function(color, multiplier) {
 
 	// pad with zeros
 	color = ("00" + r.toString(16)).substr(-2) + ("00" + g.toString(16)).substr(-2) + ("00" + b.toString(16)).substr(-2);
-	console.log(color);
 
-	return parseInt(color, 16);
+	return color;
 };
 
 var colorFromName = function(name) {
-	return parseInt(Colors[(parseInt(name, 33) % Colors.length)], 16);
+	return ("000000" + parseInt(Colors[(parseInt(name, 33) % Colors.length)], 16)).substr(-6);
 };
 

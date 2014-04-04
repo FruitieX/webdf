@@ -63,7 +63,7 @@ var loadMap = function() {
 	scene.add( mesh );
 
 	loader.load( "res/gun.js", function(json_geometry) {
-		material = new THREE.MeshPhongMaterial( { map: THREE.ImageUtils.loadTexture('res/player.png'), envMap: textureCube, color: colorFromName(playername), ambient: colorFromName(playername), combine: THREE.MixOperation, reflectivity: 0.1 } ),
+		material = new THREE.MeshPhongMaterial( { map: THREE.ImageUtils.loadTexture('res/player.png'), envMap: textureCube, color: parseInt(colorFromName(playername), 16), ambient: parseInt(colorFromName(playername), 16), combine: THREE.MixOperation, reflectivity: 0.1 } ),
 
 		gunmodel = new THREE.Mesh( json_geometry, material );
 		gunmodel.scale.set( 4, 4, 4 );

@@ -11,6 +11,9 @@ var projectilesThink = function() {
 };
 
 var addProjectile = function(origin, endpoint, color) {
+	console.log("color before is: " + color);
+	color = parseInt(color, 16);
+	console.log("color after is: " + color);
 	var line_mat = new THREE.LineBasicMaterial({
 		fog: false,
 		color: color,
