@@ -33,7 +33,10 @@ var IsMoveInDir = function(fwd, side, angle) {
 }
 
 var doMove = function(delta) {
-	delta /= 1000; // convert to seconds
+	//delta /= 1000; // convert to seconds
+	delta = 1/60;
+	//delta = Math.min(0.1, delta); // keep it to sane values
+	//console.log(delta);
 
 	var modifier = 1;
 
@@ -87,9 +90,9 @@ var doMove = function(delta) {
 
 	if(fly) {
 		// friction
-		velocity.x += ( - velocity.x ) * 0.5 * delta;
-		velocity.y += ( - velocity.y ) * 0.5 * delta;
-		velocity.z += ( - velocity.z ) * 0.5 * delta;
+		velocity.x += ( - velocity.x ) * 10 * delta;
+		velocity.y += ( - velocity.y ) * 10 * delta;
+		velocity.z += ( - velocity.z ) * 10 * delta;
 		velocity.add(wishDir);
 	} else if (onGround) {
 		// clip y velocity so we don't fall through
@@ -206,7 +209,7 @@ var doMove = function(delta) {
 		}
 		velocity.y = vel_y;
 		// gravity
-		velocity.y -= 4 * delta;
+		velocity.y -= 3 * delta;
 	}
 
 	$("#speed").text("Speed: " + new THREE.Vector3(velocity.x, 0, velocity.z).length());

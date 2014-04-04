@@ -6,13 +6,13 @@ var loadMap = function() {
 	var light = new THREE.AmbientLight( 0x222222 );
 	scene.add( light );
 
-	light = new THREE.PointLight( 0xb8e8f8, 0.5, 0 );
+	light = new THREE.PointLight( 0xd18518, 0.5, 0 );
 	light.position.set( 10000, 10000, 10000 );
 	scene.add( light );
-	light = new THREE.PointLight( 0xb8e8f8, 0.5, 0 );
+	light = new THREE.PointLight( 0xd18518, 0.5, 0 );
 	light.position.set( -10000, 10000, -10000 );
 	scene.add( light );
-	light = new THREE.PointLight( 0xb8e8f8, 0.5, 0 );
+	light = new THREE.PointLight( 0xd18518, 0.5, 0 );
 	light.position.set( 0, -10000, 0 );
 	scene.add( light );
 
@@ -70,4 +70,8 @@ var loadMap = function() {
 
 		scene.add(gunmodel);
 	});
+
+	spotLight = new THREE.SpotLight( 0xaaaaaa );
+	spotLight.position.set( 1000, 500, 1000 );
+	scene.add( spotLight );
 };
