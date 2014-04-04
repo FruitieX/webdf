@@ -28,9 +28,7 @@ var redrawScoreboard = function() {
 	});
 
 	for(var i = 0; i < players_a.length; i++) {
-		console.log('color from name: ' + colorFromName(players_a[i].name));
 		var color = modifyColor(colorFromName(players_a[i].name), 0.5);
-		console.log('html color:' + color);
 		$("#scoreboard").append("<span style=\"color:#" + color + "\">" + players_a[i].name + ": " + players_a[i].score + "</span><br>");
 	}
 }
