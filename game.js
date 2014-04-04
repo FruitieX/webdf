@@ -62,6 +62,12 @@ var updateScore = function(cnt) {
 	});
 }
 
+var spawnPoints = [
+	[0, 0, 0],
+	[157, -28, -110],
+	[-68, -11, -206],
+	[-182, -114, -98]
+];
 var respawn = function(reason) {
 	console.log(reason);
 	var file = "death" + Math.floor(Math.random()*3 + 1).toString();
@@ -73,9 +79,13 @@ var respawn = function(reason) {
 	});
 
 	// neat hardcoded spawnpoint for now :)
-	yawObject.position.x = 0;
-	yawObject.position.y = 10;
-	yawObject.position.z = 0;
+	var spawnPoint = Math.floor(Math.random() * spawnPoints.length);
+	yawObject.position.x = spawnPoints[spawnPoint][0];
+	yawObject.position.y = spawnPoints[spawnPoint][1];
+	yawObject.position.z = spawnPoints[spawnPoint][2];
+	yawObject.rotation.x = 0;
+	yawObject.rotation.y = 0;
+	yawObject.rotation.z = 0;
 	velocity.x = 0;
 	velocity.y = 0;
 	velocity.z = 0;

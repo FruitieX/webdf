@@ -34,12 +34,14 @@ var addProjectile = function(origin, endpoint, color) {
 	scene.add(three_line);
 };
 
-var shoot = function (){
+var shoot = function () {
 	// still reloading?
 	if(Date.now() - lastShoot < RELOAD_TIME)
 		return;
 
 	lastShoot = Date.now();
+
+	console.log("position at shoot: " + yawObject.position.x, yawObject.position.y, yawObject.position.z);
 
 	var dirVec = new THREE.Vector3(1,0,0);
 	dirVec = getLookDirection(dirVec);

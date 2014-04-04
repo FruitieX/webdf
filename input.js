@@ -98,8 +98,8 @@ var pointerLockSetup = function() {
 	pitchObject.add( camera );
 
 	yawObject = new THREE.Object3D();
-	yawObject.position.y = 10;
 	yawObject.add( pitchObject );
+	respawn("initial respawn");
 
 	scene.add( yawObject );
 
