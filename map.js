@@ -69,6 +69,5 @@ var loadMap = function() {
 		gunmodel.scale.set( 4, 4, 4 );
 
 		scene.add(gunmodel);
-		console.log(gunmodel);
 	});
 };
