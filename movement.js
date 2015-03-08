@@ -32,7 +32,11 @@ var IsMoveInDir = function(fwd, side, angle) {
 	return 1 - Math.abs(angle);
 }
 
-var doMove = function(delta) {
+var topspeed = 0;
+var topvel = null;
+var topspeed_time = null;
+
+var doMove = function(delta, timestamp) {
 	//delta /= 1000; // convert to seconds
 	//delta = 1/60;
 	delta = Math.min(0.1, delta); // keep it to sane values
@@ -93,6 +97,7 @@ var doMove = function(delta) {
 		throttledFootstep();
 	}
 
+    // TODO!!!!! this is not right, due to this you can turn way too fast
 	//var wishVel = new THREE.Vector3();
     var wishspeed = wishDir.length() * sv_maxspeed;
 
@@ -206,14 +211,31 @@ var doMove = function(delta) {
 		velocity.y -= sv_gravity * (delta);
 	}
 
+    var xy_vel = new THREE.Vector3(velocity.x, 0, velocity.z);
+
+    // store speed for a while... or maybe not
+    /*
+    if(xy_vel.length() > topspeed) {
+        topspeed = xy_vel.length();
+        topvel = new THREE.Vector3().copy(xy_vel);
+        topspeed_time = timestamp;
+    }
+    if(!onGround && topvel && topvel.length() > xy_vel.length() && timestamp - topspeed_time < 1000) {
+        velocity.x = topvel.x;
+        velocity.z = topvel.z;
+    }
+    if(timestamp - topspeed_time >= 1000) {
+        topspeed = 0;
+    }
+    */
+
 	$("#speed").text("Speed: " + new THREE.Vector3(velocity.x, 0, velocity.z).length());
 
 	var onGround_old = onGround;
 	onGround = false;
 
 	ray = new THREE.Raycaster(yawObject.position, wishDir, 0, velocity.length());
-    /*
-	// get rid of extreme velocity clip bugs by tracing direction of wishDir
+	// (maybe) get rid of extreme velocity clip bugs by tracing direction of wishDir
     var octreeResults = octree.search(ray.ray.origin, ray.ray.far, true, ray.ray.direction);
 	var intersections = ray.intersectOctreeObjects( octreeResults );
 
@@ -225,7 +247,6 @@ var doMove = function(delta) {
 			wishDir.projectOnPlane(normal);
 		}
 	}
-    */
 
     // TODO: wat
 	yawObject.position.add(new THREE.Vector3().copy(velocity).multiplyScalar(delta));

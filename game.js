@@ -115,8 +115,8 @@ function animate(timestamp) {
 
     //playerBBox.position = yawObject.position;
 
-	doMove((timestamp - oldTimestamp) / 1000);//timestamp - start);
-    console.log(timestamp - oldTimestamp);
+	doMove((timestamp - oldTimestamp) / 1000, timestamp);//timestamp - start);
+    //console.log(timestamp - oldTimestamp);
     oldTimestamp = timestamp;
 	//prevFrameTime = Date.now();
 	numFrames++;
