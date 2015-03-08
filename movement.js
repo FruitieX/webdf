@@ -44,7 +44,7 @@ var doMove = function(delta) {
 
 	var dirVec = new THREE.Vector3();
 	var dirEuler;
-	var fly = true;
+	var fly = false;
 	if (fly)
 		dirEuler = new THREE.Euler(pitchObject.rotation.x, yawObject.rotation.y, 0, "YXZ");
 	else
@@ -243,10 +243,7 @@ var doMove = function(delta) {
     // TODO: wat
 	yawObject.position.add(new THREE.Vector3().copy(velocity).multiplyScalar((delta) / (delta)));
 
-    var octreeResults = octree.search(yawObject.position, 1);
-    if(octreeResults)
-        console.log('octreeResults: ' + octreeResults.length);
-    console.log(octreeResults);
+    //var octreeResults = octree.search(yawObject.position, 1);
 
 	// now trace against corners of bbox
 	for(var i = 0; i < bbox_dirs.length; i++) {
@@ -255,13 +252,12 @@ var doMove = function(delta) {
 		ray.set(yawObject.position, tempVec);
 		ray.far = bbox_dists[i] + epsilon;
 
-        //var octreeResults = octree.search(ray.ray.origin, ray.ray.far, true, ray.ray.direction);
+        var octreeResults = octree.search(ray.ray.origin, ray.ray.far, true, ray.ray.direction);
 
-        //console.log(octreeResults);
-        //var intersections = ray.intersectOctreeObjects( octreeResults );
-        //console.log('intersections: ' + intersections.length);
+        //console.log(octreeResults[0]);
+        var intersections = ray.intersectOctreeObjects( octreeResults );
+        console.log('intersections: ' + intersections.length);
 
-        /*
 		if ( intersections.length > 0 ) {
 			// loop through every intersection
 			for(var j = 0; j < intersections.length; j++) {
@@ -282,7 +278,6 @@ var doMove = function(delta) {
 				yawObject.position.add(new THREE.Vector3().copy(normal).normalize().multiplyScalar(bbox_dists[i] - distance));
 			}
 		}
-        */
 	}
 };
 

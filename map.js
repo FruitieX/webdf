@@ -57,7 +57,7 @@ var loadMap = function() {
             octree.add(face);
         });
         */
-        octree.add(map, { useVertices: true } );
+        octree.add(map, { useFaces: true } );
         octree.update();
 	});
 
