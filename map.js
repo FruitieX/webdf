@@ -20,7 +20,7 @@ var loadMap = function(callback) {
 	var sky;
 	// load map
 	loader = new THREE.JSONLoader();
-	loader.load( "q3dm6/q3dm6.json", function(json_geometry, json_material) {
+	loader.load( "pornstar-thickerwoman/pornstar-thickerwoman.json", function(json_geometry, json_material) {
 		//texture = THREE.ImageUtils.loadTexture('res/rock.png');
 		//texture.wrapS = THREE.RepeatWrapping;
 		//texture.wrapT = THREE.RepeatWrapping;

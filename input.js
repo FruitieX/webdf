@@ -26,6 +26,13 @@ var onKeyDown = function ( event ) {
 		case 32: // space
 			jump = true;
 			break;
+
+        case 18: // alt
+            respawn('killed self');
+            break;
+
+        default:
+            console.log('unknown key ' + event.keyCode);
 	}
 };
 

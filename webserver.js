@@ -47,6 +47,9 @@ io.sockets.on('connection', function(socket) {
 	socket.on('sound', function(data) {
 		socket.broadcast.emit('sound', data);
 	});
+    socket.on('chat', function(data) {
+        io.sockets.emit('chat', data);
+    });
 	//client disconnects
 	socket.on('disconnect', function(data) {
 		socket.broadcast.emit('p_disconnected', socket.id);

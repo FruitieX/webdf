@@ -35,18 +35,19 @@ var IsMoveInDir = function(fwd, side, angle) {
 var topspeed = 0;
 var topvel = null;
 var topspeed_time = null;
+var oldspeed = 0;
+var accelbar_val = 0;
 
 var doMove = function(delta, timestamp) {
 	//delta /= 1000; // convert to seconds
 	//delta = 1/60;
-	delta = Math.min(0.1, delta); // keep it to sane values
+	delta = Math.max(0.000001, Math.min(0.1, delta)); // keep it to sane values
 	//console.log(delta);
 
 	var wishDir = new THREE.Vector3();
 
 	var dirVec = new THREE.Vector3();
 	var dirEuler;
-	var fly = false;
 	if (fly)
 		dirEuler = new THREE.Euler(pitchObject.rotation.x, yawObject.rotation.y, 0, "YXZ");
 	else
@@ -103,10 +104,10 @@ var doMove = function(delta, timestamp) {
 
 	if(fly) {
 		// friction
-		velocity.x += ( - velocity.x ) * 1 * delta;
-		velocity.y += ( - velocity.y ) * 1 * delta;
-		velocity.z += ( - velocity.z ) * 1 * delta;
-		velocity.add(wishDir);
+		velocity = new THREE.Vector3(0, 0, 0)
+        if(wishDir.length())
+            velocity.copy(wishDir).multiplyScalar(sv_maxspeed * 2);
+        console.log(velocity);
 	} else if (onGround) {
 		// clip y velocity so we don't fall through
 		velocity.y = Math.max( 0, velocity.y );
@@ -229,10 +230,24 @@ var doMove = function(delta, timestamp) {
     }
     */
 
-	$("#speed").text("Speed: " + new THREE.Vector3(velocity.x, 0, velocity.z).length());
+	$("#speed").text(Math.round(xy_vel.length()));
+
+    accelbar_val = accelbar_avgfactor * accelbar_val + (1 - accelbar_avgfactor)
+            * ((xy_vel.length() - oldspeed) / delta);
+
+    console.log(accelbar_val);
+    var width = Math.max(Math.min(accelbar_val / accelbar_sens, 1), -1) * 50;
+    $("#accel").css("left", String((width >= 0) ? 50 : 50 + width) + '%');
+	$("#accel").css("width", Math.abs(width) + '%');
+    $("#accel").css("-webkit-filter", "hue-rotate(" + ((width >= 0) ? 0 : 230) + "deg)");
+    oldspeed = xy_vel.length();
 
 	var onGround_old = onGround;
 	onGround = false;
+
+    // collision testing
+    if(noclip)
+        return;
 
 	ray = new THREE.Raycaster(yawObject.position, wishDir, 0, velocity.length());
 	// (maybe) get rid of extreme velocity clip bugs by tracing direction of wishDir
@@ -248,7 +263,6 @@ var doMove = function(delta, timestamp) {
 		}
 	}
 
-    // TODO: wat
 	yawObject.position.add(new THREE.Vector3().copy(velocity).multiplyScalar(delta));
 
     //var octreeResults = octree.search(yawObject.position, 1);

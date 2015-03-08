@@ -1,5 +1,5 @@
 var netInit = function() {
-	socket = io.connect("http://localhost:8081");
+	socket = io.connect("http://bulky.fruitiex.org:8081");
 
 	socket.on('update', function(data) {
 		var player = findPlayer(data);
@@ -7,7 +7,7 @@ var netInit = function() {
 		// still loading model?
 		if(player.model) {
 			player.model.position.x = data.pos.x;
-			player.model.position.y = data.pos.y - 10;
+			player.model.position.y = data.pos.y - 40;
 			player.model.position.z = data.pos.z;
 
 			player.model.rotation = new THREE.Euler(0, data.rotY, 0, 'XYZ');
@@ -42,6 +42,10 @@ var netInit = function() {
 		delete players[data];
 		redrawScoreboard();
 	});
+
+    socket.on('chat', function(message) {
+        appendChat(message);
+    });
 };
 
 var findPlayer = function(data) {
@@ -59,7 +63,7 @@ var findPlayer = function(data) {
 		loader.load( "res/player.js", function(json_geometry) {
 			material = new THREE.MeshPhongMaterial( { map: THREE.ImageUtils.loadTexture('res/player.png'), envMap: textureCube, ambient: parseInt(colorFromName(player.name), 16), color: parseInt(colorFromName(player.name), 16), reflectivity: 0.1, emissive: parseInt(modifyColor(colorFromName(player.name), -0.5), 16), shininess: 50} ),
 			player.model = new THREE.Mesh( json_geometry, material );
-			player.model.scale.set( 4, 4, 4 );
+			player.model.scale.set( 16, 16, 16 );
 			scene.add(player.model);
 		});
 

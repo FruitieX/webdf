@@ -7,7 +7,7 @@ var init = function() {
 
 	netInit();
 	globalsInit();
-	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.01, 100000 );
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 100000 );
 	scene = new THREE.Scene();
 	setupRenderer();
 
@@ -68,7 +68,7 @@ var updateScore = function(cnt) {
 }
 
 var spawnPoints = [
-	[195, 600, 830],
+	[-8180, -2200, -16210],
 ];
 var respawn = function(reason) {
 	console.log(reason);
@@ -86,12 +86,32 @@ var respawn = function(reason) {
 	yawObject.position.y = spawnPoints[spawnPoint][1];
 	yawObject.position.z = spawnPoints[spawnPoint][2];
 	yawObject.rotation.x = 0;
-	yawObject.rotation.y = 0;
+	yawObject.rotation.y = 90;
 	yawObject.rotation.z = 0;
 	velocity.x = 0;
 	velocity.y = 0;
 	velocity.z = 0;
 }
+
+var chatMsgs = [];
+var appendChat = function(message) {
+    $('#chat').empty();
+
+    chatMsgs.push(message.playername + ': ' + message.text);
+    if(chatMsgs.length > 5)
+        chatMsgs.shift();
+
+    var s = "";
+    for(var i = 0; i < chatMsgs.length; i++) {
+        $('#chat').append($('<li>').text(chatMsgs[i]));
+    }
+}
+var chat = function(text) {
+    socket.emit('chat', {
+        playername: playername,
+        text: text
+    });
+};
 
 var draw_fps = function() {
 	$("#fps").html("FPS: " + Math.round(numFrames / (Date.now() - lastFpsTime) * 1000));

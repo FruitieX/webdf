@@ -35,6 +35,7 @@ var addProjectile = function(origin, endpoint, color) {
 };
 
 var shoot = function () {
+    return;
 	// still reloading?
 	if(Date.now() - lastShoot < RELOAD_TIME)
 		return;

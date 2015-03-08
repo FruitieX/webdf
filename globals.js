@@ -32,6 +32,10 @@ var bbox_dists = [
 ];
 
 // movement & input
+var fly = false;
+var noclip = false;
+var accelbar_sens = 400;
+var accelbar_avgfactor = 0.2;
 var sv_gravity = 800;
 var sv_jumpvelocity = 270;
 var sv_airaccelerate = 1;
