@@ -1,4 +1,4 @@
-var loadMap = function() {
+var loadMap = function(callback) {
 	// enable black fog
 	//scene.fog = new THREE.Fog( 0x000000, 0, 500 );
 
@@ -48,17 +48,13 @@ var loadMap = function() {
             bbox_maxs[2] - bbox_mins[2]
         ), new THREE.MeshNormalMaterial() );
 
-        octree = new THREE.Octree({
-            //scene: scene
-        });
         /*
         _.each(json_geometry.faces, function(face) {
             //console.log('adding face ' + face);
             octree.add(face);
         });
         */
-        octree.add(map, { useFaces: true } );
-        octree.update();
+        callback();
 	});
 
 	var r = "res/skybox/";

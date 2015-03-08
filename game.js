@@ -10,7 +10,6 @@ var init = function() {
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.01, 100000 );
 	scene = new THREE.Scene();
 	setupRenderer();
-	loadMap();
 
 	createjs.Sound.initializeDefaultPlugins();
 	createjs.Sound.registerSound("res/shoot.ogg", "shoot");
@@ -29,8 +28,14 @@ var init = function() {
 
 	createjs.Sound.registerSound("res/jump.ogg", "jump");
 
-	pointerLockSetup();
-	animate();
+	loadMap(function() {
+        octree = new THREE.Octree({});
+        octree.add(map, { useFaces: true } );
+        octree.update();
+
+        pointerLockSetup();
+        animate();
+    });
 }
 
 var redrawScoreboard = function() {
@@ -95,20 +100,25 @@ var draw_fps = function() {
 }
 var throttledDrawFps = _.throttle(draw_fps, 1000);
 
+var oldTimestamp = null;
 // main game loop
-function animate() {
-	requestAnimationFrame( animate );
-
+function animate(timestamp) {
 	if (mouseDown)
 		shoot();
 
+    if(!timestamp) timestamp = 0;
+    if(!oldTimestamp) oldTimestamp = timestamp;
+    /*
 	if(!prevFrameTime)
 		prevFrameTime = Date.now();
+        */
 
-    playerBBox.position = yawObject.position;
+    //playerBBox.position = yawObject.position;
 
-	doMove(Date.now() - prevFrameTime);
-	prevFrameTime = Date.now();
+	doMove((timestamp - oldTimestamp) / 1000);//timestamp - start);
+    console.log(timestamp - oldTimestamp);
+    oldTimestamp = timestamp;
+	//prevFrameTime = Date.now();
 	numFrames++;
 	throttledDrawFps();
 	crosshairReloadUpdate();
@@ -137,6 +147,7 @@ function animate() {
 	}
 
 	renderer.render( scene, camera );
+	window.requestAnimationFrame( animate );
 
 	// we're falling and fast... probably fell out of map!
     /*

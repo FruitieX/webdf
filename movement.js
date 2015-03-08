@@ -33,7 +33,7 @@ var IsMoveInDir = function(fwd, side, angle) {
 }
 
 var doMove = function(delta) {
-	delta /= 1000; // convert to seconds
+	//delta /= 1000; // convert to seconds
 	//delta = 1/60;
 	delta = Math.min(0.1, delta); // keep it to sane values
 	//console.log(delta);
