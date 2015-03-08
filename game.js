@@ -63,7 +63,7 @@ var updateScore = function(cnt) {
 }
 
 var spawnPoints = [
-	[0, 0, 0],
+	[195, 600, 830],
 ];
 var respawn = function(reason) {
 	console.log(reason);
@@ -104,6 +104,9 @@ function animate() {
 
 	if(!prevFrameTime)
 		prevFrameTime = Date.now();
+
+    playerBBox.position = yawObject.position;
+
 	doMove(Date.now() - prevFrameTime);
 	prevFrameTime = Date.now();
 	numFrames++;
@@ -136,10 +139,12 @@ function animate() {
 	renderer.render( scene, camera );
 
 	// we're falling and fast... probably fell out of map!
+    /*
 	if(velocity.y < -10) {
 		updateScore(-1);
 		respawn("Fell out of map");
 	}
+    */
 }
 
 init();

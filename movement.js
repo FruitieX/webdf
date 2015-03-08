@@ -44,7 +44,7 @@ var doMove = function(delta) {
 
 	var dirVec = new THREE.Vector3();
 	var dirEuler;
-	var fly = false;
+	var fly = true;
 	if (fly)
 		dirEuler = new THREE.Euler(pitchObject.rotation.x, yawObject.rotation.y, 0, "YXZ");
 	else
@@ -97,9 +97,9 @@ var doMove = function(delta) {
 
 	if(fly) {
 		// friction
-		velocity.x += ( - velocity.x ) * 10 * delta;
-		velocity.y += ( - velocity.y ) * 10 * delta;
-		velocity.z += ( - velocity.z ) * 10 * delta;
+		velocity.x += ( - velocity.x ) * 1 * delta;
+		velocity.y += ( - velocity.y ) * 1 * delta;
+		velocity.z += ( - velocity.z ) * 1 * delta;
 		velocity.add(wishDir);
 	} else if (onGround) {
 		// clip y velocity so we don't fall through
@@ -224,9 +224,11 @@ var doMove = function(delta) {
 	var onGround_old = onGround;
 	onGround = false;
 
-	// get rid of extreme velocity clip bugs by tracing direction of wishDir
 	ray = new THREE.Raycaster(yawObject.position, wishDir, 0, velocity.length());
-	var intersections = ray.intersectObjects( [map] );
+    /*
+	// get rid of extreme velocity clip bugs by tracing direction of wishDir
+    var octreeResults = octree.search(ray.ray.origin, ray.ray.far, true, ray.ray.direction);
+	var intersections = ray.intersectOctreeObjects( octreeResults );
 
 	if( intersections.length > 0 ) {
 		for(var j = 0; j < intersections.length; j++) {
@@ -236,8 +238,15 @@ var doMove = function(delta) {
 			wishDir.projectOnPlane(normal);
 		}
 	}
+    */
 
+    // TODO: wat
 	yawObject.position.add(new THREE.Vector3().copy(velocity).multiplyScalar((delta) / (delta)));
+
+    var octreeResults = octree.search(yawObject.position, 1);
+    if(octreeResults)
+        console.log('octreeResults: ' + octreeResults.length);
+    console.log(octreeResults);
 
 	// now trace against corners of bbox
 	for(var i = 0; i < bbox_dirs.length; i++) {
@@ -246,8 +255,13 @@ var doMove = function(delta) {
 		ray.set(yawObject.position, tempVec);
 		ray.far = bbox_dists[i] + epsilon;
 
-		var intersections = ray.intersectObjects( [map] );
+        //var octreeResults = octree.search(ray.ray.origin, ray.ray.far, true, ray.ray.direction);
 
+        //console.log(octreeResults);
+        //var intersections = ray.intersectOctreeObjects( octreeResults );
+        //console.log('intersections: ' + intersections.length);
+
+        /*
 		if ( intersections.length > 0 ) {
 			// loop through every intersection
 			for(var j = 0; j < intersections.length; j++) {
@@ -268,6 +282,7 @@ var doMove = function(delta) {
 				yawObject.position.add(new THREE.Vector3().copy(normal).normalize().multiplyScalar(bbox_dists[i] - distance));
 			}
 		}
+        */
 	}
 };
 

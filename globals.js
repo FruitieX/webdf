@@ -2,7 +2,8 @@
 var camera, scene, renderer;
 var geometry, material, mesh;
 var prevFrameTime;
-var map_scale = 0.20;
+//var map_scale = 0.20;
+var map_scale = 1;
 var map;
 var gunmodel;
 var textureCube;
@@ -14,6 +15,8 @@ var ray, dirVec;
 // player bounding box size
 var bbox_mins = [-2, -10, -2];
 var bbox_maxs = [2, 2, 2];
+
+var playerBBox;
 
 // vectors pointing to all corners of bounding box from origin
 var bbox_dirs;

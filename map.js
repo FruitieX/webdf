@@ -33,14 +33,32 @@ var loadMap = function() {
         //materialloader.load( "q3dm6/q3dm6.materials.json", function(material) {
             map = new THREE.Mesh( json_geometry, material );
             map.scale.set( map_scale, map_scale, map_scale );
-            map.position.x = 120;
-            map.position.y = -150;
-            map.position.z = 20;
+            map.position.x = 0;
+            map.position.y = 0;
+            map.position.z = 0;
             map_uuid = map.uuid;
 
             scene.add(map);
-            console.log(json_geometry);
+            console.log(map);
         //});
+
+        playerBBox = new THREE.Mesh(new THREE.CubeGeometry(
+            bbox_maxs[0] - bbox_mins[0],
+            bbox_maxs[1] - bbox_mins[1],
+            bbox_maxs[2] - bbox_mins[2]
+        ), new THREE.MeshNormalMaterial() );
+
+        octree = new THREE.Octree({
+            //scene: scene
+        });
+        /*
+        _.each(json_geometry.faces, function(face) {
+            //console.log('adding face ' + face);
+            octree.add(face);
+        });
+        */
+        octree.add(map, { useVertices: true } );
+        octree.update();
 	});
 
 	var r = "res/skybox/";
