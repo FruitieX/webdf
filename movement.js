@@ -33,12 +33,10 @@ var IsMoveInDir = function(fwd, side, angle) {
 }
 
 var doMove = function(delta) {
-	//delta /= 1000; // convert to seconds
+	delta /= 1000; // convert to seconds
 	//delta = 1/60;
 	delta = Math.min(0.1, delta); // keep it to sane values
 	//console.log(delta);
-
-	var modifier = 1;
 
 	var wishDir = new THREE.Vector3();
 
@@ -84,7 +82,7 @@ var doMove = function(delta) {
 	wishDir.normalize();
 
 	if(onGround && jump) {
-		velocity.y += 1;
+		velocity.y += sv_jumpvelocity;
 		onGround = false;
 		createjs.Sound.play("jump");
 		socket.emit("sound", {
@@ -113,26 +111,21 @@ var doMove = function(delta) {
 		 * as possible.
 		 */
 
-		var sv_friction = 8; // 8 default
-		var sv_accelerate = 15;
-		var stopspeed = 0.3125; //100;
-
 		var accelspeed;
 
-		var wishspeed = wishDir.length();
+		var wishspeed = wishDir.length() * sv_maxspeed;
 
 		var f = Math.sqrt(velocity.x * velocity.x + velocity.z * velocity.z);
 		if (f > 0)
 		{
-			var friction = sv_friction;
-			f = 1 - ((delta)) * friction * ((f < stopspeed) ? (stopspeed / f) : 1);
+			f = 1 - ((delta)) * sv_friction * ((f < sv_stopspeed) ? (sv_stopspeed / f) : 1);
 			f = Math.max(f, 0);
 			velocity.multiplyScalar(f);
 		}
 		var addspeed = wishspeed - velocity.dot(wishDir);
 		if (addspeed > 0)
 		{
-			accelspeed = Math.min(sv_accelerate * ((delta)) * wishspeed, addspeed);
+			accelspeed = Math.min(sv_accelerate * delta * wishspeed, addspeed);
 			velocity.x = velocity.x + accelspeed * wishDir.x;
 			velocity.y = velocity.y + accelspeed * wishDir.y;
 			velocity.z = velocity.z + accelspeed * wishDir.z;
@@ -143,28 +136,19 @@ var doMove = function(delta) {
 		var vel_y = velocity.y;
 		velocity.y = 0;
 
-		var airaccelerate = 1;
-		var airstopaccelerate = 2.5;
-		var airstrafeaccelerate = 70; //0.21875; //70;
-		var stopspeed = 0.3125; //100;
-		var aircontrol = 0.46875; //150;
-		var aircontrol_power = 2;
-		var maxairspeed = 1; //320;
-		var maxairstrafespeed = 0.09375; //30;
-
 		var speed = velocity.length();
 		var wishspeed = wishDir.length();
 		var wishspeed0 = wishspeed;
 
-		var accel = airaccelerate;
+		var accel = sv_airaccelerate;
 		var curdir = new THREE.Vector3().copy(velocity);
 		curdir.normalize();
 
-		accel += (airstopaccelerate - accel) * Math.max(0, -1 * curdir.dot(wishDir));
+		accel += (sv_airstopaccelerate - accel) * Math.max(0, -1 * curdir.dot(wishDir));
 
 		var strafity = IsMoveInDir(fwdmove, sidemove, -90) + IsMoveInDir(fwdmove, sidemove, +90);
-		wishspeed = Math.min(wishspeed, GeomLerp(maxairspeed, strafity, maxairstrafespeed));
-		accel = GeomLerp(airaccelerate, strafity, airstrafeaccelerate);
+		wishspeed = Math.min(wishspeed, GeomLerp(sv_maxairspeed, strafity, sv_maxairstrafespeed));
+		accel = GeomLerp(sv_airaccelerate, strafity, sv_airstrafeaccelerate);
 
 		// CL_ClientMovement_Physics_PM_Accelerate
 		var vel_straight = velocity.dot(wishDir);
@@ -197,13 +181,13 @@ var doMove = function(delta) {
 
 			//var k = 32 * (2 * moveInDir(forward, side) - 1); // TODO!
 			var k = 0.5; //32;
-			k *= Math.min(1, Math.max(0, wishspeed / maxairspeed));
+			k *= Math.min(1, Math.max(0, wishspeed / sv_maxairspeed));
 			var dot = velocity.dot(wishDir);
 
 			if(dot > 0) {
-				k *= Math.pow(dot, aircontrol_power) * ((delta));
+				k *= Math.pow(dot, sv_aircontrol_power) * ((delta));
 				speed = Math.max(0, speed);
-				k *= aircontrol;
+				k *= sv_aircontrol;
 				velocity.x = speed * velocity.x + k * wishDir.x;
 				velocity.y = speed * velocity.y + k * wishDir.y;
 				velocity.z = speed * velocity.z + k * wishDir.z;
@@ -241,7 +225,7 @@ var doMove = function(delta) {
     */
 
     // TODO: wat
-	yawObject.position.add(new THREE.Vector3().copy(velocity).multiplyScalar((delta) / (delta)));
+	yawObject.position.add(new THREE.Vector3().copy(velocity).multiplyScalar(delta));
 
     //var octreeResults = octree.search(yawObject.position, 1);
 
@@ -256,7 +240,7 @@ var doMove = function(delta) {
 
         //console.log(octreeResults[0]);
         var intersections = ray.intersectOctreeObjects( octreeResults );
-        console.log('intersections: ' + intersections.length);
+        //console.log('intersections: ' + intersections.length);
 
 		if ( intersections.length > 0 ) {
 			// loop through every intersection

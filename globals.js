@@ -13,8 +13,8 @@ var epsilon = 0.1;
 var ray, dirVec;
 
 // player bounding box size
-var bbox_mins = [-2, -10, -2];
-var bbox_maxs = [2, 2, 2];
+var bbox_mins = [-16, -24, -16];
+var bbox_maxs = [16, 45, 16];
 
 var playerBBox;
 
@@ -32,7 +32,20 @@ var bbox_dists = [
 ];
 
 // movement & input
-var sv_gravity = 0.666;
+var sv_gravity = 800;
+var sv_jumpvelocity = 270;
+var sv_airaccelerate = 1;
+var sv_airstopaccelerate = 2.5;
+var sv_airstrafeaccelerate = 70; //0.21875; //70;
+var sv_aircontrol = 150; //150;
+var sv_aircontrol_power = 2;
+var sv_maxairspeed = 320; //320;
+var sv_maxspeed = 320
+var sv_maxairstrafespeed = 30; //30;
+var sv_friction = 8; // 8 default
+var sv_accelerate = 15;
+var sv_stopspeed = 100; //100;
+
 var pitchObject, yawObject;
 var velocity = new THREE.Vector3();
 var moveForward = false;
