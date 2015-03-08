@@ -1,4 +1,13 @@
 var onKeyDown = function ( event ) {
+    if(chatInputActive) {
+        switch ( event.keyCode ) {
+            case 27: // esc
+                $("#chattextfield").css("visibility", "hidden");
+                chatInputActive = false;
+                break;
+        }
+        return;
+    }
 	switch ( event.keyCode ) {
 		case 38: // up
 		case 87: // w
@@ -22,6 +31,11 @@ var onKeyDown = function ( event ) {
 		case 69: // dvorak e
 			moveRight = true;
 			break;
+
+        case 89: // t
+        case 84: // dvorak
+            chatInput();
+            break;
 
 		case 32: // space
 			jump = true;

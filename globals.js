@@ -31,6 +31,9 @@ var bbox_dists = [
 	Math.sqrt(Math.pow(Math.sqrt(Math.pow(bbox_maxs[0], 2) + Math.pow(bbox_maxs[1], 2)), 2) + Math.pow(bbox_maxs[2], 2))
 ];
 
+// misc
+var chatmsg_lifetime = 30;
+
 // movement & input
 var fly = false;
 var noclip = false;

@@ -33,13 +33,29 @@ html, body {
 	color:white;
 }
 
+#chattextfield {
+    visibility: hidden;
+    width: 100%;
+}
+
+#chatInput {
+    position:absolute;
+    z-index:15;
+    left:20px;
+    width: 50%;
+    bottom:0px;
+}
+
 #chat {
     position:absolute;
     z-index:10;
     left:20px;
-    bottom:20px;
+    bottom:40px;
     color:white;
+    padding: 4px;
     list-style-type:none;
+    background-color: rgba(0, 0, 0, 0.5);
+    visibility: hidden;
 }
 
 #speed {

@@ -36,6 +36,19 @@ var init = function() {
         pointerLockSetup();
         animate();
     });
+
+    $("#chatform").submit(function(event) {
+        event.preventDefault();
+        var text = $("#chattextfield").val();
+        if(text.length) {
+            socket.emit("chat", {
+                text: text,
+                playername: playername
+            });
+        }
+        $("#chattextfield").css("visibility", "hidden");
+        chatInputActive = false;
+    });
 }
 
 var redrawScoreboard = function() {
@@ -93,24 +106,51 @@ var respawn = function(reason) {
 	velocity.z = 0;
 }
 
+var refreshChat = function() {
+    $('#chat').empty();
+    if(chatMsgs.length) {
+        $('#chat').css("visibility", "visible");
+
+        var s = "";
+        for(var i = 0; i < chatMsgs.length; i++) {
+            $('#chat').append($('<li>').text(chatMsgs[i].playername + ': ' + chatMsgs[i].text));
+        }
+    } else {
+        $('#chat').css("visibility", "hidden");
+    }
+};
+
 var chatMsgs = [];
 var appendChat = function(message) {
-    $('#chat').empty();
-
-    chatMsgs.push(message.playername + ': ' + message.text);
-    if(chatMsgs.length > 5)
+    message.timestamp = new Date().getTime();
+    message.timeout = setTimeout(function() {
         chatMsgs.shift();
+        refreshChat();
+    }, chatmsg_lifetime * 1000);
 
-    var s = "";
-    for(var i = 0; i < chatMsgs.length; i++) {
-        $('#chat').append($('<li>').text(chatMsgs[i]));
+    chatMsgs.push(message);
+    if(chatMsgs.length > 5) {
+        var oldMsg = chatMsgs.shift();
+        clearTimeout(oldMsg.timeout);
     }
+    refreshChat();
 }
 var chat = function(text) {
     socket.emit('chat', {
         playername: playername,
         text: text
     });
+};
+
+var chatInputActive = false;
+var chatInput = function() {
+    //$("#chatInput
+    chatInputActive = true;
+    $("#chattextfield").val("");
+    $("#chattextfield").css("visibility", "visible");
+    setTimeout(function() {
+        $("#chattextfield").focus();
+    }, 0);
 };
 
 var draw_fps = function() {
@@ -178,4 +218,6 @@ function animate(timestamp) {
     */
 }
 
-init();
+$(document).ready(function() {
+    init();
+});
