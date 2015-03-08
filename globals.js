@@ -13,8 +13,8 @@ var epsilon = 0.1;
 var ray, dirVec;
 
 // player bounding box size
-var bbox_mins = [-16, -24, -16];
-var bbox_maxs = [16, 45, 16];
+var bbox_mins = [-16, -44, -16];
+var bbox_maxs = [16, 25, 16];
 
 var playerBBox;
 

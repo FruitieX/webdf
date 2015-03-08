@@ -93,6 +93,9 @@ var doMove = function(delta) {
 		throttledFootstep();
 	}
 
+	//var wishVel = new THREE.Vector3();
+    var wishspeed = wishDir.length() * sv_maxspeed;
+
 	if(fly) {
 		// friction
 		velocity.x += ( - velocity.x ) * 1 * delta;
@@ -113,7 +116,7 @@ var doMove = function(delta) {
 
 		var accelspeed;
 
-		var wishspeed = wishDir.length() * sv_maxspeed;
+		var wishspeed = Math.min(wishspeed, sv_maxspeed);
 
 		var f = Math.sqrt(velocity.x * velocity.x + velocity.z * velocity.z);
 		if (f > 0)
@@ -137,8 +140,8 @@ var doMove = function(delta) {
 		velocity.y = 0;
 
 		var speed = velocity.length();
-		var wishspeed = wishDir.length();
 		var wishspeed0 = wishspeed;
+		wishspeed = Math.min(wishspeed, sv_maxairspeed);
 
 		var accel = sv_airaccelerate;
 		var curdir = new THREE.Vector3().copy(velocity);
