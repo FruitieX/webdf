@@ -235,7 +235,6 @@ var doMove = function(delta, timestamp) {
     accelbar_val = accelbar_avgfactor * accelbar_val + (1 - accelbar_avgfactor)
             * ((xy_vel.length() - oldspeed) / delta);
 
-    console.log(accelbar_val);
     var width = Math.max(Math.min(accelbar_val / accelbar_sens, 1), -1) * 50;
     $("#accel").css("left", String((width >= 0) ? 50 : 50 + width) + '%');
 	$("#accel").css("width", Math.abs(width) + '%');
