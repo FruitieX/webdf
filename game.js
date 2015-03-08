@@ -3,6 +3,8 @@ var init = function() {
 		playername = $.cookie('playername');
 
 	playername = prompt("Enter nickname:", playername);
+    if(!playername)
+        playername = "Player " + (Math.floor(Math.random() * 1000) % 1000);
 	$.cookie("playername", playername);
 
 	netInit();
