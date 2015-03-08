@@ -113,7 +113,7 @@ var doMove = function(delta) {
 		 * as possible.
 		 */
 
-		var sv_friction = 8;
+		var sv_friction = 8; // 8 default
 		var sv_accelerate = 15;
 		var stopspeed = 0.3125; //100;
 

@@ -20,16 +20,16 @@ var loadMap = function() {
 	var sky;
 	// load map
 	loader = new THREE.JSONLoader();
-	loader.load( "q3dm6/q3dm6.json", function(json_geometry) {
+	loader.load( "q3dm6/q3dm6.json", function(json_geometry, json_material) {
 		//texture = THREE.ImageUtils.loadTexture('res/rock.png');
 		//texture.wrapS = THREE.RepeatWrapping;
 		//texture.wrapT = THREE.RepeatWrapping;
 		//texture.repeat.x = 5;
 		//texture.repeat.y = 5;
-		//material = new THREE.MeshPhongMaterial({map: texture});
-		//material.wireframe = true;
+		material = new THREE.MeshPhongMaterial({map: texture});
+		material.wireframe = false;
 
-        //var materialloader = new THREE.JSONLoader();
+        //var materialloader = new THREE.MaterialLoader();
         //materialloader.load( "q3dm6/q3dm6.materials.json", function(material) {
             map = new THREE.Mesh( json_geometry, material );
             map.scale.set( map_scale, map_scale, map_scale );
@@ -39,6 +39,7 @@ var loadMap = function() {
             map_uuid = map.uuid;
 
             scene.add(map);
+            console.log(json_geometry);
         //});
 	});
 
@@ -65,6 +66,7 @@ var loadMap = function() {
 	var mesh = new THREE.Mesh( new THREE.BoxGeometry( 10000, 10000, 10000 ), material );
 	scene.add( mesh );
 
+    /*
 	loader.load( "res/gun.js", function(json_geometry) {
 		material = new THREE.MeshPhongMaterial( { map: THREE.ImageUtils.loadTexture('res/player.png'), envMap: textureCube, color: parseInt(colorFromName(playername), 16), ambient: parseInt(colorFromName(playername), 16), combine: THREE.MixOperation, reflectivity: 0.1 } ),
 
@@ -73,6 +75,7 @@ var loadMap = function() {
 
 		scene.add(gunmodel);
 	});
+    */
 
 	spotLight = new THREE.SpotLight( 0xaaaaaa );
 	spotLight.position.set( 1000, 500, 1000 );
