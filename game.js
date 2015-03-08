@@ -64,9 +64,6 @@ var updateScore = function(cnt) {
 
 var spawnPoints = [
 	[0, 0, 0],
-	[157, -28, -110],
-	[-68, -11, -206],
-	[-182, -114, -98]
 ];
 var respawn = function(reason) {
 	console.log(reason);

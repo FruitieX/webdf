@@ -2,7 +2,7 @@
 var camera, scene, renderer;
 var geometry, material, mesh;
 var prevFrameTime;
-var map_scale = 15;
+var map_scale = 0.20;
 var map;
 var gunmodel;
 var textureCube;
@@ -29,6 +29,7 @@ var bbox_dists = [
 ];
 
 // movement & input
+var sv_gravity = 0.666;
 var pitchObject, yawObject;
 var velocity = new THREE.Vector3();
 var moveForward = false;

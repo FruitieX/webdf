@@ -1,6 +1,6 @@
 var loadMap = function() {
 	// enable black fog
-	scene.fog = new THREE.Fog( 0x000000, 0, 500 );
+	//scene.fog = new THREE.Fog( 0x000000, 0, 500 );
 
 	// ambient light for really dark spots
 	var light = new THREE.AmbientLight( 0x222222 );
@@ -20,23 +20,26 @@ var loadMap = function() {
 	var sky;
 	// load map
 	loader = new THREE.JSONLoader();
-	loader.load( "res/map1.js", function(json_geometry) {
-		texture = THREE.ImageUtils.loadTexture('res/rock.png');
-		texture.wrapS = THREE.RepeatWrapping;
-		texture.wrapT = THREE.RepeatWrapping;
-		texture.repeat.x = 5;
-		texture.repeat.y = 5;
-		material = new THREE.MeshPhongMaterial({map: texture});
+	loader.load( "q3dm6/q3dm6.json", function(json_geometry) {
+		//texture = THREE.ImageUtils.loadTexture('res/rock.png');
+		//texture.wrapS = THREE.RepeatWrapping;
+		//texture.wrapT = THREE.RepeatWrapping;
+		//texture.repeat.x = 5;
+		//texture.repeat.y = 5;
+		//material = new THREE.MeshPhongMaterial({map: texture});
 		//material.wireframe = true;
 
-		map = new THREE.Mesh( json_geometry, material );
-		map.scale.set( map_scale, map_scale, map_scale );
-		map.position.x = 0;
-		map.position.y = 0;
-		map.position.z = 0;
-		map_uuid = map.uuid;
+        //var materialloader = new THREE.JSONLoader();
+        //materialloader.load( "q3dm6/q3dm6.materials.json", function(material) {
+            map = new THREE.Mesh( json_geometry, material );
+            map.scale.set( map_scale, map_scale, map_scale );
+            map.position.x = 120;
+            map.position.y = -150;
+            map.position.z = 20;
+            map_uuid = map.uuid;
 
-		scene.add(map);
+            scene.add(map);
+        //});
 	});
 
 	var r = "res/skybox/";
